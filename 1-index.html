@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shmuel Alef Perek 17 – Golyas 3D and Battle Animation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Rubik:wght@400;500;700&family=Assistant:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#3B1E4A;--main:#5FA8D3;--second:#F3EAF7;--accent:#E8C15A;--paper:color-mix(in srgb,#F3EAF7 84%,#E8C15A);--ink:#3B1E4A;--soft:color-mix(in srgb,#3B1E4A 72%,#F3EAF7);
+ color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(110% 90% at 50% 50%,color-mix(in srgb,var(--main) 16%,var(--ground)),var(--ground));color:var(--second);font-family:Rubik,"Segoe UI",system-ui,sans-serif;overflow:hidden;user-select:none;cursor:pointer}
+.stage{position:absolute;inset:0;display:grid;place-items:center}
+.scroll{position:relative;width:min(92vw,163vh);height:min(82vh,46vw)}
+.paper{position:absolute;inset:0;background:var(--paper);color:var(--ink);border-radius:8px;box-shadow:0 24px 60px rgba(0,0,0,.3);overflow:hidden;clip-path:inset(0 50% 0 50%);transition:clip-path .75s cubic-bezier(.2,.7,.2,1)}
+.open .paper{clip-path:inset(0 0 0 0)}
+.rod{position:absolute;top:-3.5%;height:107%;width:2.6%;left:48.7%;border-radius:999px;background:color-mix(in srgb,var(--accent) 70%,var(--ground));transition:transform .75s cubic-bezier(.2,.7,.2,1)}
+.rod::before,.rod::after{content:"";position:absolute;left:12%;width:76%;height:3.6%;border-radius:999px;background:var(--accent)}
+.rod::before{top:-2.6%}.rod::after{bottom:-2.6%}
+.open .rl{transform:translateX(calc(-1 * min(46vw,81.5vh)))}.open .rr{transform:translateX(min(46vw,81.5vh))}
+.inner{position:absolute;inset:0;display:grid;grid-template-columns:38% 62%;padding:3.5% 4.5% 3.5% 3%}
+.art svg{width:100%;height:100%}
+.text{display:flex;flex-direction:column;gap:1.4vh;padding-left:2%;overflow:hidden}
+.ref{font-weight:700;font-size:min(2vw,3.4vh);color:color-mix(in srgb,var(--main) 50%,var(--ground));letter-spacing:.02em}
+.heb{font-family:"Frank Ruhl Libre",David,serif;font-weight:700;direction:rtl;text-align:right;font-size:min(3.6vw,6.2vh);line-height:1.25;margin:0}
+.en{font-size:min(1.7vw,2.9vh);color:var(--soft);margin:0;font-style:italic}
+.q{font-family:"Frank Ruhl Libre",Georgia,serif;font-weight:700;font-size:min(2.5vw,4.3vh);line-height:1.2;margin:.6vh 0 0;padding-top:1.2vh;border-top:2px solid color-mix(in srgb,var(--ink) 25%,transparent)}
+.q span{display:block}
+ul.pts{list-style:none;margin:.6vh 0 0;padding:0;display:flex;flex-direction:column;gap:1.4vh}
+ul.pts li{font-size:min(2.05vw,3.5vh);line-height:1.3;padding-left:1.4em;position:relative;opacity:0;transform:translateX(18px);transition:opacity .45s,transform .45s}
+ul.pts li::before{content:"";position:absolute;left:.25em;top:.55em;width:.45em;height:.45em;border-radius:50%;background:var(--accent);border:2px solid var(--ink)}
+ul.pts li.on{opacity:1;transform:none}
+.hw{font-family:"Frank Ruhl Libre",David,serif;font-weight:700;font-size:1.12em}
+ul.pts a{color:var(--ink);font-weight:700;text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:3px;text-underline-offset:4px}
+.text .heb,.text .en,.text .q{transition:font-size .4s,opacity .4s,max-height .4s}
+.text .en{max-height:20vh}
+.rev .en{max-height:0;opacity:0;margin:-1.4vh 0 0}
+.rev .heb{font-size:min(2.4vw,4.2vh)}
+.rev .q{font-size:min(1.9vw,3.3vh)}
+.rev ul.pts li{font-size:min(1.8vw,3.05vh)}
+.rev ul.pts{gap:1.1vh}
+.title{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vh;text-align:center}
+.title .heb{text-align:center;font-size:min(7vw,12vh)}
+.title p.e{font-family:"Frank Ruhl Libre",Georgia,serif;font-weight:700;font-size:min(3.6vw,6vh);margin:0}
+.uline{width:34%;height:10px;border-radius:5px;background:var(--accent);transform-origin:left;animation:grow .7s .9s both}
+.count{position:fixed;right:2vw;bottom:calc(1.6vh + env(safe-area-inset-bottom,0px));font-size:14px;color:color-mix(in srgb,var(--second) 60%,transparent);z-index:20}
+.nav{position:fixed;left:2vw;bottom:calc(1.2vh + env(safe-area-inset-bottom,0px));display:flex;gap:8px;z-index:20}
+.nav button{font:inherit;font-size:14px;color:var(--second);background:color-mix(in srgb,var(--ground) 70%,transparent);border:1px solid color-mix(in srgb,var(--second) 30%,transparent);border-radius:6px;padding:4px 12px;cursor:pointer}
+.nav button:focus-visible{outline:2px solid var(--accent)}
+.bsd{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:18px;font-family:"Frank Ruhl Libre",David,serif;font-size:17px;color:var(--second);z-index:20}
+#notes{position:fixed;top:0;right:0;bottom:0;width:min(520px,92vw);background:#1b1222;color:#f3eaf7;z-index:30;overflow-y:auto;padding:24px 26px 60px;font:400 15px/1.55 Rubik,system-ui,sans-serif;display:none;cursor:auto;user-select:text;border-left:2px solid var(--accent)}
+#notes.on{display:block}
+#notes h3{font-family:"Frank Ruhl Libre",serif;font-size:21px;margin:0 0 10px}
+#notes p{margin:0 0 10px}
+#notes .he{font-family:"Frank Ruhl Libre",serif;direction:rtl;text-align:right;font-size:18px}
+#notes b{color:var(--accent);font-weight:600}
+/* art */
+.ink{fill:none;stroke:var(--ink);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.robe{fill:color-mix(in srgb,var(--main) 38%,var(--second));stroke:var(--ink);stroke-width:5;stroke-linejoin:round}
+.skin{fill:color-mix(in srgb,var(--second) 80%,var(--accent));stroke:var(--ink);stroke-width:5}
+.gold{fill:var(--accent);stroke:var(--ink);stroke-width:4;stroke-linejoin:round}
+.land{fill:color-mix(in srgb,var(--main) 24%,var(--paper));stroke:var(--ink);stroke-width:5;stroke-linejoin:round}
+.sv{font-family:"Frank Ruhl Libre",David,serif;font-weight:700;font-size:40px;fill:var(--ink)}
+.f{transform-box:fill-box;transform-origin:50% 100%}
+[data-step]{opacity:.16;transition:opacity .6s}
+[data-step].lit{opacity:1}
+.arrive{animation:arrive 1.3s .4s both ease-out}
+.rise{animation:rise2 1.4s .5s both ease-out}
+@keyframes arrive{from{transform:translateX(-130px);opacity:0}to{transform:none;opacity:1}}
+@keyframes rise2{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+/* 3D model screen */
+#model{position:fixed;inset:0;z-index:10;display:none;cursor:auto;user-select:auto;
+ --scene:#1A2024; --panel:#1F262A; --ink2:#E6EAEC; --muted:#9AA5AB; --line:#343D42;
+ --copper:#DE9265; --row:#293136; --row-on:#E6EAEC; --row-on-ink:#1F262A; --tag:rgba(31,38,42,.9);
+ background:var(--panel);color:var(--ink2);font:400 16px/1.5 "Assistant",system-ui,sans-serif}
+#model.on{display:block}
+
+#model .app{display:grid;grid-template-columns:minmax(0,1fr) 390px;height:100%}
+#model #stage{position:relative;background:var(--scene);overflow:hidden;min-height:0;touch-action:none}
+#model #stage canvas{display:block;width:100%;height:100%;outline:none}
+#model #labels{position:absolute;inset:0;pointer-events:none}
+#model .tag{position:absolute;transform:translate(-50%,calc(-100% - 8px));background:var(--tag);color:var(--ink2);border:1px solid var(--line);border-radius:6px;padding:4px 9px;font-size:14px;line-height:1.3;white-space:nowrap;text-align:center}
+#model .tag b{font-weight:600;display:block}
+#model .tick{position:absolute;transform:translate(10px,-50%);font-size:13px;color:var(--ink2);opacity:.8;font-variant-numeric:tabular-nums}
+#model .views{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:calc(100% - 24px)}
+#model .views button{font:inherit;font-size:14px;color:var(--ink2);background:var(--tag);border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+#model .views button[aria-pressed="true"]{background:var(--row-on);color:var(--row-on-ink);border-color:var(--row-on)}
+#model .hint{position:absolute;left:14px;top:12px;font-size:13px;color:var(--ink2);opacity:.7}
+#model aside{overflow-y:auto;border-left:1px solid var(--line);padding:46px 24px 70px}
+#model h1{font-family:"Frank Ruhl Libre","Times New Roman",serif;font-weight:500;font-size:34px;line-height:1.1;margin:6px 0 2px}
+#model .sub{color:var(--muted);margin:0 0 18px}
+#model .measure{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;margin:0 0 10px;align-items:baseline}
+#model .measure dt{font-weight:600}
+#model .measure dd{margin:0;font-variant-numeric:tabular-nums}
+#model .measure .big{font-family:"Frank Ruhl Libre",serif;font-size:22px}
+#model .note{font-size:14px;color:var(--muted);margin:8px 0 0}
+#model section.opt{border-top:1px solid var(--line);padding:18px 0 4px;margin-top:18px}
+#model section.opt h2{font-size:17px;font-weight:600;margin:0;display:flex;justify-content:space-between;gap:10px}
+#model section.opt h2 span{font-weight:400;color:var(--muted);font-size:14px}
+#model .pasuk{font-family:"Frank Ruhl Libre","David","Times New Roman",serif;font-size:21px;line-height:1.5;margin:6px 0 10px;text-align:right}
+#model .choices{display:grid;gap:6px}
+#model .choices button{font:inherit;text-align:left;background:var(--row);color:var(--ink2);border:1px solid transparent;border-radius:8px;padding:8px 12px;cursor:pointer;line-height:1.3}
+#model .choices button small{display:block;font-size:13px;opacity:.75;margin-top:2px}
+#model .choices button[aria-pressed="true"]{background:var(--row-on);color:var(--row-on-ink)}
+#model button:focus-visible{outline:2px solid var(--copper);outline-offset:2px}
+#model .src{margin:12px 0 0;display:grid;gap:10px}
+#model .src div{font-size:15px;line-height:1.55}
+#model .src .who{display:block;font-size:13px;font-weight:600;color:var(--copper);margin-bottom:1px}
+#model .src .he{font-family:"Frank Ruhl Libre","David","Times New Roman",serif;font-size:19px;line-height:1.6;text-align:right}
+#model .src .he .who{text-align:left;font-family:"Assistant",system-ui,sans-serif}
+#model .also{border-top:1px solid var(--line);margin-top:18px;padding-top:16px;font-size:15px}
+#model .also h2{font-size:17px;font-weight:600;margin:0 0 6px}
+#model .also p{margin:0 0 6px}
+@media (max-width:860px){
+  #model{overflow-y:auto}
+  #model .app{grid-template-columns:1fr;grid-template-rows:64vh auto;height:auto}
+  #model #stage{height:64vh}
+  #model aside{border-left:0;border-top:1px solid var(--line);overflow:visible}
+  #model .views{bottom:10px;gap:4px;flex-wrap:nowrap}
+  #model .views button{font-size:13px;padding:5px 8px}
+}
+
+/* battle screen */
+#battle{position:fixed;inset:0;z-index:10;display:none;cursor:auto;background:#1A2024;color:#E6EAEC;font:400 16px/1.5 "Assistant",system-ui,sans-serif}
+#battle.on{display:block}
+#battle [hidden]{display:none!important}
+#bstage{position:absolute;inset:0;overflow:hidden;touch-action:none}
+#bstage canvas{display:block;width:100%;height:100%;outline:none}
+#bfade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+.bcap{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(56px + env(safe-area-inset-bottom,0px));width:min(1100px,92vw);background:rgba(20,26,30,.82);border:1px solid #343D42;border-radius:10px;padding:12px 18px 12px;pointer-events:none}
+.bcap .r{font-size:13px;font-weight:600;color:#DE9265;margin:0 0 2px}
+.bcap .h{font-family:"Frank Ruhl Libre",David,serif;font-weight:700;font-size:min(2.3vw,26px);line-height:1.45;direction:rtl;text-align:right;margin:0}
+.bcap .e{font-size:min(1.45vw,16px);color:#C9D1D6;margin:4px 0 0}
+#bbig{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);font:600 22px "Assistant",system-ui,sans-serif;color:#1F262A;background:#E6EAEC;border:0;border-radius:999px;padding:14px 34px;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+#bctl{position:absolute;left:14px;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;gap:6px}
+#bctl button{font:inherit;font-size:14px;color:#E6EAEC;background:rgba(31,38,42,.9);border:1px solid #343D42;border-radius:6px;padding:6px 14px;cursor:pointer}
+#bctl button[aria-pressed="true"]{background:#E6EAEC;color:#1F262A}
+#battle button:focus-visible{outline:2px solid #DE9265;outline-offset:2px}
+.bbar{position:absolute;left:0;right:0;top:0;height:4px;background:rgba(255,255,255,.08)}
+#bcam{position:absolute;right:14px;top:calc(env(safe-area-inset-top,0px) + 40px);display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:min(560px,70vw)}
+#bcam button{font:inherit;font-size:14px;color:#E6EAEC;background:rgba(31,38,42,.9);border:1px solid #343D42;border-radius:6px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+#bcam button[aria-pressed="true"]{background:#E6EAEC;color:#1F262A}
+#bhint{flex-basis:100%;text-align:right;font-size:13px;color:#C9D1D6;background:rgba(31,38,42,.75);border-radius:6px;padding:4px 8px}
+.bbar i{display:block;height:100%;width:0;background:#DE9265}
+body.ov-on .stage{visibility:hidden}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important;transition-duration:.01s!important}}
+</style></head>
+<body>
+<div class="bsd" dir="rtl" lang="he">בס״ד</div>
+<div class="stage"><div class="scroll" id="scroll"><div class="paper"><div class="inner" id="inner"></div></div><div class="rod rl"></div><div class="rod rr"></div></div></div>
+<div id="model">
+<div class="app">
+  <div id="stage">
+    <div id="labels"></div>
+    <div class="hint">Drag to turn. Scroll or pinch to zoom.</div>
+    <div class="views" role="group" aria-label="Views">
+      <button data-view="front">Front</button>
+      <button data-view="back">Back</button>
+      <button data-view="left">His left</button>
+      <button data-view="right">His right</button>
+      <button data-view="top">Top</button>
+      <button id="turn" aria-pressed="false">Turn</button>
+      <button id="apart" aria-pressed="false">Take apart</button>
+    </div>
+  </div>
+  <aside>
+    <h1>Golyas</h1>
+    <p class="sub">Shmuel Alef 17, pesukim 4–7</p>
+    <p class="pasuk" dir="rtl" lang="he">גָּלְיָת שְׁמוֹ מִגַּת גָּבְהוֹ שֵׁשׁ אַמּוֹת וָזָרֶת</p>
+    <dl class="measure">
+      <dt>Golyas</dt><dd><span class="big">6 amos and a zeres</span><br><span id="golSize">6½ amos, about 10 ft 3 in</span></dd>
+      <dt>Shield bearer</dt><dd><span class="big">3 amos</span><br>about 4 ft 9 in</dd>
+    </dl>
+    <p class="note">Feet use Rav Chaim Na’eh’s amah of 18.9 in (48 cm). The shield bearer is shown at a regular man’s height, 3 amos, as Daas Sofrim writes on pasuk 4.</p>
+    <div id="groups"></div>
+    <div class="also">
+      <h2>Also shown</h2>
+      <p>Copper helmet (pasuk 5), spearhead of 600 iron shekels (pasuk 7), and his sword in its sheath (pesukim 45, 51).</p>
+      <p class="note">The pesukim don’t give the size of the spear, sword or shield, so those are drawn to fit. The shield is drawn as woven wicker on a wooden frame, light enough for one man, resting on the ground and held by two grips and a shoulder strap.</p>
+    </div>
+  </aside>
+</div>
+</div>
+<div id="battle"><div id="bstage"><div id="bfade"></div>
+<div class="bbar"><i id="bprog"></i></div>
+<div id="bctl" hidden><button id="bplay" aria-pressed="false">Pause</button><button id="bagain">Start over</button></div>
+<button id="bbig">Play</button>
+<div id="bcam" role="group" aria-label="Camera"><button data-cam="auto" aria-pressed="true">Auto camera</button><button data-cam="dovid" aria-pressed="false">Follow Dovid</button><button data-cam="golyas" aria-pressed="false">Follow Golyas</button><button data-cam="free" aria-pressed="false">Free look</button><span id="bhint" hidden>Drag to turn, scroll or pinch to zoom, right-drag to slide, W A S D to walk, Q and E for down and up</span></div>
+<div class="bcap"><p class="r" id="bref"></p><p class="h" id="bheb" lang="he"></p><p class="e" id="ben"></p></div>
+</div></div>
+<div id="notes" aria-live="polite"></div>
+<div class="nav"><button id="prev" aria-label="Back">Back</button><button id="next" aria-label="Next">Next</button></div>
+<div class="count" id="count"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+function initModel(){
+"use strict";
+
+/* ---------- sources ---------- */
+var RASHI5 = {who:"Rashi", html:"“Scaled armor” – Like fish scales, made of iron, spread over the coat (another version: the holes of the coat), a scale [covering] each hole."};
+var GRA = {who:"The Gra explains (Orlah 3:2)", html:"The Yerushalmi holds a zeres is a third of an amah, and the Bavli holds it is half. They don’t argue about the size of the hand: measured straight across from thumb to pinky it is a third, and measured around the curve of the fingertips it is half."};
+var MZ4 = {who:"Metzudas Tzion", he:true, html:"„וזרת” – רוצה לומר השעור מן האגודל עד האצבע הקטנה הקרויה זרת, וכן (שמות כח טז): זרת ארכו"};
+var RASHI7 = {who:"Rashi", html:"“Six hundred shekel” – All <i>shekels</i> mentioned in the <i>Nevi’im,</i> are ‘maneh.’"};
+var MD5 = {who:"Metzudas David, pasuk 5", he:true, html:"„שקלים נחשת” – כמו שקלי נחושת, ואינם דומים לשאר שקלים"};
+var MD7 = {who:"Metzudas David, pasuk 7", he:true, html:"„ולהבת” – ברזל החנית, היה משקלו שש מאות שקלי ברזל, ומשונה הוא משקלי נחושת"};
+var GROUPS = [
+  {key:"zeres", title:"How long is a zeres", ref:"pasuk 4", pasuk:"גָּבְהוֹ שֵׁשׁ אַמּוֹת וָזָרֶת",
+   options:[{id:"half", label:"Half an amah", by:"Rashbam (Shemos 28:16); the Bavli, as the Gra explains"},
+            {id:"half5", label:"Half of a five-tefach amah", by:"Rashba, Ritva"},
+            {id:"third", label:"A third of an amah", by:"The Yerushalmi, as the Gra explains"}],
+   sources:{
+     half:[MZ4, {who:"Rashbam, Shemos 28:16", he:true, html:"„זרת” – חצי אמה"}, GRA],
+     half5:[MZ4, {who:"Shu“t HaRashba 5:147, Shu“t HaRitva 86", html:"They hold that the zeres of the Torah is half of an amah of five tefachim, which is a little less than half of a regular amah."}],
+     third:[MZ4, GRA]}},
+  {key:"armor", title:"Scaled armor", ref:"pasuk 5", pasuk:"וְשִׁרְיוֹן קַשְׂקַשִּׂים הוּא לָבוּשׁ",
+   options:[{id:"coat", label:"Scales spread over the coat", by:"Rashi"},
+            {id:"holes", label:"A scale over each hole of the coat", by:"Rashi, other version; Daas Sofrim"}],
+   sources:{coat:[RASHI5], holes:[RASHI5, {who:"Daas Sofrim explains", html:"Some armor covered only over the heart. Shiryon kaskasim was made of several pieces joined together, and at each joint there were pieces like fish scales, so that no opening was left for arrows to get in. A man as big as Golyas needed a big shiryon, and he made it very thick, so that even a strong spear blow would not go through. (He notes: see Rashi and Radak.)"}]}},
+  {key:"legs", title:"On his legs", ref:"pasuk 6", pasuk:"וּמִצְחַת נְחֹשֶׁת עַל־רַגְלָיו",
+   options:[{id:"rashi", label:"A bar from the helmet down to his feet", by:"Rashi"},
+            {id:"guards", label:"Guards covering his legs", by:"Metzudas David, Daas Sofrim"}],
+   sources:{
+     rashi:[{who:"Rashi", html:"“Copper shields” – A sort of iron handle, extending from the helmet, opposite the nose, called <i>nasal</i> in O.F., and it reached his feet."}],
+     guards:[{who:"Metzudas David", he:true, html:"„ומצחת” – הוא מכלי מלחמה, ונעשה לכסות בו הרגלים"},
+             {who:"Daas Sofrim explains", html:"He covered his legs with a kind of rounded armor, shaped like a forehead."}]}},
+  {key:"kidon", title:"Between his shoulders", ref:"pasuk 6", pasuk:"וְכִידוֹן נְחֹשֶׁת בֵּין כְּתֵפָיו",
+   options:[{id:"guard", label:"A neck guard coming down from the helmet", by:"Rashi, Metzudas David, Daas Sofrim"},
+            {id:"javelin", label:"A javelin slung across his back", by:"Metsudah note on Rashi, Daas Sofrim"}],
+   sources:{
+     guard:[{who:"Rashi", html:"“A copper guard” – Targum Yonoson renders, <bdi dir=\"rtl\" lang=\"arc\">וּמְסַחֲפָא דִּנְחָשָׁא נָפֵיק מִן קוֹלְסָא וּמְטַל בֵּין כַּתְפוֹהִי</bdi>, meaning, ‘a sort of copper javelin, protruding from the helmet, and extending between his shoulders,’ to protect his neck from [injury by] the sword."},
+            {who:"Metzudas David", he:true, html:"„וכידון” – מן הכובע יצא למטה כעין כידון, להגן צוארו ממכת חרב"},
+            {who:"Daas Sofrim explains", html:"Targum Yonasan means a kind of armor sticking out of the helmet and reaching down between his shoulders, to guard his neck from the sword."}],
+     javelin:[{who:"Metsudah note on Rashi", html:"Others translate ‘a copper javelin slung between his shoulders’ because he held other weapons in his hands."},
+              {who:"Daas Sofrim explains", html:"A kidon is longer than a sword and can kill from far away. Dovid mentions Golyas’s kidon together with his sword and spear (pasuk 45)."}]}},
+  {key:"spear", title:"Spear shaft", ref:"pasuk 7", pasuk:"(וחץ) וְעֵץ חֲנִיתוֹ כִּמְנוֹר אֹרְגִים",
+   options:[{id:"thick", label:"Thick as a weaver’s beam", by:"Metzudas David"},
+            {id:"long", label:"Long like a weaver’s beam", by:"Daas Sofrim"}],
+   sources:{
+     thick:[{who:"Metzudas David", he:true, html:"„ועץ חניתו” – הוא הבית יד, שהיתה עבה כמנור אורגים"},
+            {who:"Rashi", html:"“Like a weaver’s beam” – Targum Yonoson renders, ‘like a weaver’s beam’, <i>ensouble</i> in O.F."}],
+     long:[{who:"Daas Sofrim explains", html:"The spear was very long, like a weaver’s beam, the rod a weaver winds the threads onto, which is long so it can hold many threads. With it he could strike anyone coming near before they could do anything to him."},
+           {who:"Rashi", html:"“Like a weaver’s beam” – Targum Yonoson renders, ‘like a weaver’s beam’, <i>ensouble</i> in O.F."}]}},
+  {key:"maneh", title:"How heavy is a shekel", ref:"pesukim 5, 7", pasuk:"וּמִשְׁקַל הַשִּׁרְיוֹן חֲמֵשֶׁת־אֲלָפִים שְׁקָלִים נְחֹשֶׁת",
+   options:[{id:"100", label:"A maneh of 100 dinar", by:"Rashi (pasuk 7), with a regular maneh"},
+            {id:"50", label:"A maneh of 50 dinar", by:"Rashi, as Daas Sofrim explains"},
+            {id:"sela", label:"A regular shekel (a sela)", by:"The plain meaning of the word"}],
+   sources:{
+     "100":[RASHI7, MD5, MD7, {who:"In pounds", html:"A maneh is 100 dinar. Using Rav Chaim Na’eh’s dinar of 4.8 g (250 dinar = 1,200 g of silver, Shiurei Torah), the shiryon is about 5,290 lbs and the spearhead about 635 lbs. Use <b>Take apart</b> to see each piece."}],
+     "50":[RASHI7, {who:"Daas Sofrim explains", html:"Every shekel in the Nevi’im is a maneh, which is fifty dinarin, a considerable weight. They may have weighed this shiryon after he was killed and his armor was taken."}, MD5, MD7, {who:"In pounds", html:"Using Rav Chaim Na’eh’s dinar of 4.8 g (250 dinar = 1,200 g of silver, Shiurei Torah), the shiryon is about 2,650 lbs and the spearhead about 317 lbs. Use <b>Take apart</b> to see each piece."}],
+     "sela":[{who:"The plain meaning", html:"Read simply, a shekel is a regular shekel, the sela. None of the meforshim here explain it this way: Rashi says it is a maneh, and Metzudas David says these shekels are not like other shekels."}, MD5, MD7, {who:"In pounds", html:"Using Rav Chaim Na’eh’s sela of 19.2 g, the shiryon is about 212 lbs and the spearhead about 25 lbs. Use <b>Take apart</b> to see each piece."}]}},
+  {key:"bearer", title:"Shield bearer", ref:"pesukim 7, 41", pasuk:"וְנֹשֵׂא הַצִּנָּה הֹלֵךְ לְפָנָיו",
+   options:[{id:"front", label:"Walking in front of him", by:"Pesukim 7, 41"},
+            {id:"none", label:"Not there for the fight with Dovid", by:"Daas Sofrim"}],
+   sources:{
+     front:[{who:"Metzudas David", he:true, html:"„הולך לפניו” – להגן בו עליו ממכת חרב וחנית"},
+            {who:"Daas Sofrim explains", html:"The shield was like a wall that could be carried, held up in front of him to cover him, so he could charge out suddenly as if from a hiding place, and anyone fighting him first had to get past the shield bearer. It also doubled his protection from arrows. He brings Dovid’s words in Tehillim, <bdi dir=\"rtl\" lang=\"he\">כַּצִּנָּה רָצוֹן תַּעְטְרֶנּוּ</bdi>, to show how fully a tzinah covers a fighter."}],
+     none:[{who:"Daas Sofrim explains", html:"When Dovid came out, the shield bearer did not take part, because the condition was that only one man would fight."}]}}
+];
+var state = {zeres:"half", armor:"coat", legs:"rashi", kidon:"guard", spear:"thick", maneh:"100", bearer:"front", apart:false};
+
+/* ---------- panel ---------- */
+var groupsEl = document.getElementById("groups");
+GROUPS.forEach(function(g){
+  var sec = document.createElement("section");
+  sec.className = "opt";
+  var h = "<h2>" + g.title + "<span>" + g.ref + "</span></h2>" +
+          "<p class=\"pasuk\" dir=\"rtl\" lang=\"he\">" + g.pasuk + "</p><div class=\"choices\" role=\"group\" aria-label=\"" + g.title + "\">";
+  g.options.forEach(function(o){
+    h += "<button type=\"button\" data-key=\"" + g.key + "\" data-id=\"" + o.id + "\">" + o.label + "<small>" + o.by + "</small></button>";
+  });
+  h += "</div><div class=\"src\" id=\"src-" + g.key + "\"></div>";
+  sec.innerHTML = h;
+  groupsEl.appendChild(sec);
+});
+function renderSources(){
+  GROUPS.forEach(function(g){
+    var box = document.getElementById("src-" + g.key);
+    box.innerHTML = g.sources[state[g.key]].map(function(s){
+      return s.he ? "<div class=\"he\" dir=\"rtl\" lang=\"he\"><span class=\"who\" dir=\"ltr\">" + s.who + "</span>" + s.html + "</div>"
+                  : "<div><span class=\"who\">" + s.who + "</span>" + s.html + "</div>";
+    }).join("");
+  });
+  document.querySelectorAll(".choices button").forEach(function(b){
+    b.setAttribute("aria-pressed", state[b.dataset.key] === b.dataset.id ? "true" : "false");
+  });
+}
+groupsEl.addEventListener("click", function(e){
+  var b = e.target.closest("button[data-key]");
+  if(!b) return;
+  state[b.dataset.key] = b.dataset.id;
+  renderSources(); applyState();
+});
+
+if(typeof THREE === "undefined"){
+  document.getElementById("labels").innerHTML = "<div class=\"tag\" style=\"left:50%;top:50%;transform:translate(-50%,-50%)\">The 3D viewer couldn’t load. Check the internet connection and reload the page.</div>";
+  renderSources();
+  return;
+}
+
+/* ---------- renderer ---------- */
+var stage = document.getElementById("stage");
+var renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.insertBefore(renderer.domElement, stage.firstChild);
+
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(35, 1, 0.1, 300);
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 2.5;
+controls.maxDistance = 45;
+controls.maxPolarAngle = Math.PI * 0.497;
+controls.autoRotateSpeed = 1.2;
+
+/* environment for metal reflections */
+(function(){
+  var env = new THREE.Scene();
+  var sky = new THREE.Mesh(new THREE.SphereGeometry(50, 32, 16), new THREE.MeshBasicMaterial({side:THREE.BackSide, vertexColors:true}));
+  var pos = sky.geometry.attributes.position, cols = [];
+  var top = new THREE.Color(0xdfe6ec).convertSRGBToLinear(), mid = new THREE.Color(0xa9a396).convertSRGBToLinear(), low = new THREE.Color(0x4e4538).convertSRGBToLinear();
+  for(var i=0;i<pos.count;i++){
+    var y = pos.getY(i)/50, c = y > 0 ? mid.clone().lerp(top, y) : mid.clone().lerp(low, -y);
+    cols.push(c.r, c.g, c.b);
+  }
+  sky.geometry.setAttribute("color", new THREE.Float32BufferAttribute(cols, 3));
+  env.add(sky);
+  function panel(x,y,z,w,h,intensity){
+    var m = new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({color:new THREE.Color(intensity,intensity,intensity*0.96), side:THREE.DoubleSide}));
+    m.position.set(x,y,z); m.lookAt(0,0,0); env.add(m);
+  }
+  panel(18,26,14,22,10,3.2); panel(-24,14,-8,16,10,1.2); panel(0,8,-30,30,6,0.8);
+  var pm = new THREE.PMREMGenerator(renderer);
+  scene.environment = pm.fromScene(env, 0.03).texture;
+})();
+
+scene.add(new THREE.HemisphereLight(0xe3eaf0, 0x6e604c, 0.35));
+var sun = new THREE.DirectionalLight(0xfff1de, 1.8);
+sun.position.set(7, 14, 9);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -9; sun.shadow.camera.right = 9;
+sun.shadow.camera.top = 13; sun.shadow.camera.bottom = -4;
+sun.shadow.camera.near = 1; sun.shadow.camera.far = 40;
+sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02;
+scene.add(sun);
+var fill = new THREE.DirectionalLight(0xc9d6e2, 0.45);
+fill.position.set(-8, 6, -6);
+scene.add(fill);
+
+/* ---------- materials ---------- */
+function std(o){ if(o.color !== undefined) o.color = new THREE.Color(o.color).convertSRGBToLinear(); return new THREE.MeshStandardMaterial(o); }
+var M = {
+  copper:  std({color:0xc27a45, metalness:1, roughness:0.3}),
+  copperD: std({color:0x9a5a30, metalness:1, roughness:0.42}),
+  iron:    std({color:0x8e9298, metalness:1, roughness:0.4}),
+  ironB:   std({color:0xb4b8bd, metalness:1, roughness:0.22}),
+  ironD:   std({color:0x60656b, metalness:1, roughness:0.5}),
+  wood:    std({color:0x7b5534, roughness:0.72}),
+  leather: std({color:0x4c3526, roughness:0.82}),
+  shield:  std({color:0x6b4a2f, roughness:0.75}),
+  skin:    std({color:0xc4ae92, roughness:0.85}),
+  cloth:   std({color:0x7a6a54, roughness:0.95}),
+  cloth2:  std({color:0x5f6b74, roughness:0.95}),
+  ground:  std({color:0xb2a891, roughness:1}),
+  poleD:   std({color:0x2a3034, roughness:0.6}),
+  poleL:   std({color:0xe9e5db, roughness:0.6})
+};
+function dbl(m){ var c = m.clone(); c.side = THREE.DoubleSide; return c; }
+M.copper2 = dbl(M.copper); M.leather2 = dbl(M.leather); M.cloth2s = dbl(M.cloth); M.clothB2 = dbl(M.cloth2);
+
+function mesh(geo, mat, parent){
+  var m = new THREE.Mesh(geo, mat);
+  m.castShadow = true; m.receiveShadow = true;
+  if(parent) parent.add(m);
+  return m;
+}
+var UP = new THREE.Vector3(0,1,0);
+function V(x,y,z){ return new THREE.Vector3(x,y,z); }
+function seg(parent, a, b, r1, r2, mat, radial){
+  var len = a.distanceTo(b);
+  var m = mesh(new THREE.CylinderGeometry(r2, r1, len, radial || 28, 1), mat, parent);
+  m.position.copy(a).add(b).multiplyScalar(0.5);
+  m.quaternion.setFromUnitVectors(UP, b.clone().sub(a).normalize());
+  return m;
+}
+function ball(parent, p, r, mat, sx, sy, sz){
+  var m = mesh(new THREE.SphereGeometry(r, 36, 24), mat, parent);
+  m.position.copy(p); m.scale.set(sx||1, sy||1, sz||1);
+  return m;
+}
+
+/* ---------- body ---------- */
+var PROFILE = [[0.001,3.95],[0.62,3.97],[0.74,4.15],[0.76,4.45],[0.68,4.85],[0.66,5.15],[0.74,5.55],[0.84,5.95],[0.9,6.3],[0.88,6.55],[0.7,6.78],[0.36,6.92],[0.2,6.95],[0.001,6.96]];
+var DEPTH = 0.58;
+function rAt(y){
+  for(var i=0;i<PROFILE.length-1;i++){
+    var a = PROFILE[i], b = PROFILE[i+1];
+    if(y >= a[1] && y <= b[1]) return a[0] + (b[0]-a[0])*(y-a[1])/(b[1]-a[1]);
+  }
+  return 0;
+}
+function makeFigure(H, skin, tunic, tunicD, pose){
+  var p = H/8, g = new THREE.Group();
+  var torso = mesh(new THREE.LatheGeometry(PROFILE.map(function(q){ return new THREE.Vector2(q[0]*p, q[1]*p); }), 80), tunic, g);
+  torso.scale.z = DEPTH;
+  var skirt = mesh(new THREE.LatheGeometry([[0.87,3.1],[0.81,3.7],[0.75,4.2],[0.7,4.6]].map(function(q){ return new THREE.Vector2(q[0]*p, q[1]*p); }), 80), tunicD, g);
+  skirt.scale.z = 0.62;
+  seg(g, V(0,6.8*p,0), V(0,7.18*p,0), 0.21*p, 0.19*p, skin);
+  ball(g, V(0,7.5*p,0), 0.5*p, skin, 0.78, 1, 0.86);
+  [-1,1].forEach(function(s){
+    var sh = V(s*0.98*p, 6.5*p, 0), el = V(s*1.12*p, 5.02*p, -0.04*p), wr = V(s*1.19*p, 3.86*p, 0.05*p), hp = V(s*1.21*p, 3.62*p, 0.06*p);
+    if(pose){ el = pose.el(s); wr = pose.wr(s); hp = pose.hand(s); }
+    ball(g, sh, 0.25*p, tunic);
+    seg(g, sh, el, 0.2*p, 0.15*p, skin); ball(g, el, 0.15*p, skin);
+    seg(g, el, wr, 0.145*p, 0.1*p, skin);
+    ball(g, hp, 0.15*p, skin, pose ? 0.9 : 0.7, pose ? 1.1 : 1.35, 0.85);
+    var hip = V(s*0.36*p, 4.05*p, 0), kn = V(s*0.34*p, 2.1*p, 0.03*p), an = V(s*0.32*p, 0.3*p, 0);
+    seg(g, hip, kn, 0.33*p, 0.22*p, skin); ball(g, kn, 0.215*p, skin);
+    seg(g, kn, an, 0.21*p, 0.125*p, skin); ball(g, an, 0.125*p, skin);
+    ball(g, V(s*0.33*p, 0.13*p, 0.26*p), 0.2*p, skin, 0.65, 0.62, 1.6);
+  });
+  return {group:g, p:p};
+}
+
+/* ---------- ground, pole ---------- */
+var gcv = document.createElement("canvas"); gcv.width = gcv.height = 256;
+var gctx = gcv.getContext("2d"), grad = gctx.createRadialGradient(128,128,0,128,128,128);
+grad.addColorStop(0, "#fff"); grad.addColorStop(0.42, "#fff"); grad.addColorStop(1, "#000");
+gctx.fillStyle = grad; gctx.fillRect(0,0,256,256);
+M.ground.alphaMap = new THREE.CanvasTexture(gcv); M.ground.transparent = true;
+var ground = mesh(new THREE.CircleGeometry(30, 96), M.ground, scene);
+ground.rotation.x = -Math.PI/2; ground.castShadow = false;
+var grid = new THREE.GridHelper(20, 20, 0x3a3226, 0x3a3226);
+grid.material.transparent = true; grid.material.opacity = 0.16; grid.position.y = 0.003;
+scene.add(grid);
+
+var POLE = V(-2.6, 0, -0.4);
+for(var i=0;i<7;i++){
+  var s = mesh(new THREE.CylinderGeometry(0.05, 0.05, 1, 24), i % 2 ? M.poleL : M.poleD, scene);
+  s.position.set(POLE.x, i + 0.5, POLE.z);
+}
+function ring(y, mat){
+  var r = mesh(new THREE.TorusGeometry(0.11, 0.022, 12, 40), mat, scene);
+  r.rotation.x = Math.PI/2; r.position.set(POLE.x, y, POLE.z);
+  return r;
+}
+var golRing = ring(6.5, M.copper);
+var bearerRing = ring(3, M.copper);
+
+/* ---------- Golyas ---------- */
+var gol = makeFigure(6.5, M.skin, M.cloth, M.cloth2s);
+var p = gol.p, G = gol.group;
+scene.add(G);
+var BODY_N = G.children.length;
+
+/* helmet */
+(function(){
+  var h = new THREE.Group(); h.position.set(0, 7.5*p, 0); h.scale.set(0.8, 1, 0.88); G.add(h);
+  var R = 0.56*p, th = Math.PI*0.56;
+  mesh(new THREE.SphereGeometry(R, 72, 36, 0, Math.PI*2, 0, th), M.copper2, h);
+  var rim = mesh(new THREE.TorusGeometry(R*Math.sin(th), 0.032*p, 14, 120), M.copperD, h);
+  rim.rotation.x = Math.PI/2; rim.position.y = R*Math.cos(th);
+  var band = mesh(new THREE.TorusGeometry(R*0.97, 0.02*p, 10, 120), M.copperD, h);
+  band.rotation.z = Math.PI/2;
+})();
+var HELM_RIM_Y = 7.5*p + 0.56*p*Math.cos(Math.PI*0.56);
+
+/* coat under the scales */
+var coatPts = [];
+for(var y=4.0; y<=6.74; y+=0.06) coatPts.push(new THREE.Vector2(rAt(y)*1.035*p, y*p));
+var coat = mesh(new THREE.LatheGeometry(coatPts, 96), M.leather2, G);
+coat.scale.z = DEPTH;
+
+function buildScales(dense){
+  var rs = (dense ? 0.085 : 0.066)*p;
+  var geo = new THREE.CylinderGeometry(rs, rs*0.92, 0.02*p, 20, 1);
+  geo.rotateX(Math.PI/2); geo.scale(1, 1.3, 1);
+  var dy = (dense ? 0.118 : 0.2)*p, arc = (dense ? 0.14 : 0.24)*p, list = [], row = 0;
+  for(var yy = 6.62*p; yy >= 4.04*p; yy -= dy, row++){
+    var a = rAt(yy/p)*p*(dense ? 1.065 : 1.05), b = a*DEPTH;
+    var per = Math.PI*(3*(a+b) - Math.sqrt((3*a+b)*(a+3*b)));
+    var n = Math.max(10, Math.round(per/arc));
+    for(var k=0;k<n;k++) list.push([yy, (k + (row % 2 ? 0.5 : 0))/n*Math.PI*2, a, b]);
+  }
+  var im = new THREE.InstancedMesh(geo, M.iron, list.length);
+  im.castShadow = true; im.receiveShadow = true;
+  var d = new THREE.Object3D(), nr = new THREE.Vector3();
+  list.forEach(function(q, idx){
+    var x = q[2]*Math.sin(q[1]), z = q[3]*Math.cos(q[1]);
+    nr.set(q[3]*Math.sin(q[1]), 0, q[2]*Math.cos(q[1])).normalize();
+    d.position.set(x, q[0], z);
+    d.lookAt(x + nr.x, q[0], z + nr.z);
+    d.rotateX(dense ? -0.3 : -0.08);
+    d.updateMatrix();
+    im.setMatrixAt(idx, d.matrix);
+  });
+  im.instanceMatrix.needsUpdate = true;
+  G.add(im);
+  return im;
+}
+var scalesCoat = buildScales(true);
+var scalesHoles = buildScales(false);
+
+/* belt */
+(function(){
+  var bg = new THREE.Group(); bg.position.y = 4.62*p; bg.scale.z = DEPTH*1.02; G.add(bg);
+  var t = mesh(new THREE.TorusGeometry((rAt(4.62)*1.07 + 0.06)*p, 0.05*p, 14, 120), M.leather, bg);
+  t.rotation.x = Math.PI/2;
+})();
+
+/* legs: Rashi, iron bar from helmet to feet */
+var barPts = [[7.43,0.5],[7.18,0.47],[6.92,0.5],[6.45,0.62],[5.6,0.61],[4.95,0.53],[4.6,0.61],[4.25,0.6],[3.15,0.62],[2.1,0.38],[0.7,0.42],[0.03,0.46]]
+  .map(function(q){ return V(0, q[0]*p, q[1]*p); });
+var legBar = mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(barPts), 220, 0.036*p, 14, false), M.ironD, G);
+
+/* legs: Metzudas David / Daas Sofrim, copper leg guards */
+var greaves = new THREE.Group(); G.add(greaves);
+[-1,1].forEach(function(s){
+  var top = V(s*0.338*p, 2.0*p, 0.03*p), bot = V(s*0.322*p, 0.38*p, 0.005*p);
+  var len = top.distanceTo(bot);
+  var gm = mesh(new THREE.CylinderGeometry(0.245*p, 0.16*p, len, 40, 1, true, -2.05, 4.1), M.copper2, greaves);
+  gm.position.copy(top).add(bot).multiplyScalar(0.5);
+  gm.quaternion.setFromUnitVectors(UP, top.clone().sub(bot).normalize());
+  var kc = mesh(new THREE.SphereGeometry(0.245*p, 36, 18, Math.PI/2 - 1.25, 2.5, 0.35, 2.0), M.copper2, greaves);
+  kc.position.set(s*0.34*p, 2.1*p, 0.03*p);
+  var lip = mesh(new THREE.TorusGeometry(0.17*p, 0.018*p, 8, 40, 4.1), M.copperD, greaves);
+  lip.rotation.x = Math.PI/2; lip.rotation.z = Math.PI/2 - 2.05 + Math.PI; lip.position.copy(bot);
+});
+
+/* kidon: neck guard */
+var neckGuard = new THREE.Group(); G.add(neckGuard);
+(function(){
+  var ng = new THREE.Group(); ng.position.set(0, HELM_RIM_Y - 0.17*p, 0); ng.scale.set(0.82, 1, 0.9); neckGuard.add(ng);
+  mesh(new THREE.CylinderGeometry(0.47*p, 0.42*p, 0.36*p, 48, 1, true, Math.PI - 1.7, 3.4), M.copper2, ng);
+  function plate(y1, z1, y2, z2, w){
+    var a = V(0, y1*p, z1*p), b = V(0, y2*p, z2*p);
+    var m = mesh(new THREE.BoxGeometry(w*p, a.distanceTo(b), 0.035*p), M.copper, neckGuard);
+    m.position.copy(a).add(b).multiplyScalar(0.5);
+    m.quaternion.setFromUnitVectors(UP, a.clone().sub(b).normalize());
+    return m;
+  }
+  plate(7.25, -0.37, 6.72, -0.6, 0.42);
+  plate(6.74, -0.62, 6.15, -0.67, 0.36);
+  var tip = mesh(new THREE.SphereGeometry(0.18*p, 24, 12, 0, Math.PI*2, Math.PI/2, Math.PI/2), M.copper2, neckGuard);
+  tip.scale.set(1, 0.5, 0.2); tip.position.set(0, 6.15*p, -0.67*p);
+})();
+
+/* spearhead builder */
+function blade(scale, mat){
+  var prof = [[0.001,0],[0.075,0.02],[0.08,0.24],[0.17,0.42],[0.178,0.58],[0.125,0.82],[0.05,1.0],[0.001,1.08]]
+    .map(function(q){ return new THREE.Vector2(q[0]*scale, q[1]*scale); });
+  var geo = new THREE.LatheGeometry(prof, 48);
+  var bgp = geo.attributes.position;
+  for(var i=0;i<bgp.count;i++){ if(bgp.getY(i) > 0.26*scale) bgp.setZ(i, bgp.getZ(i)*0.2); }
+  geo.computeVertexNormals();
+  var m = mesh(geo, mat);
+  return m;
+}
+
+/* kidon: javelin on his back */
+var javelin = new THREE.Group(); G.add(javelin);
+(function(){
+  var a = V(-0.78*p, 4.15*p, -0.74*p), b = V(0.72*p, 7.75*p, -0.78*p);
+  seg(javelin, a, b, 0.032, 0.03, M.wood, 18);
+  var hd = blade(0.55, M.copper); javelin.add(hd);
+  hd.position.copy(b); hd.quaternion.setFromUnitVectors(UP, b.clone().sub(a).normalize());
+  var strap = new THREE.CatmullRomCurve3([V(0.62*p,7.45*p,-0.76*p), V(0.82*p,6.95*p,-0.4*p), V(0.55*p,6.4*p,0.6*p), V(-0.1*p,5.6*p,0.6*p), V(-0.62*p,4.6*p,0.55*p), V(-0.92*p,4.3*p,-0.2*p), V(-0.72*p,4.25*p,-0.74*p)]);
+  mesh(new THREE.TubeGeometry(strap, 120, 0.022*p, 8, false), M.leather, javelin);
+})();
+
+/* spear in his right hand (figure's right = -x) */
+var SPX = -1.24*p, SPZ = 0.07*p;
+function makeSpear(len, rTop, rBot){
+  var sg = new THREE.Group(); sg.position.set(SPX, 0, SPZ);
+  seg(sg, V(0,0.22,0), V(0,len,0), rBot, rTop, M.wood, 28);
+  var butt = mesh(new THREE.ConeGeometry(rBot*1.05, 0.24, 24), M.ironD, sg); butt.rotation.x = Math.PI; butt.position.y = 0.12;
+  var sock = mesh(new THREE.CylinderGeometry(0.085, rTop*1.15, 0.3, 28), M.iron, sg); sock.position.y = len + 0.1;
+  var hd = blade(1.05, M.ironB); hd.position.y = len + 0.04; sg.add(hd);
+  G.add(sg);
+  return sg;
+}
+var spearThick = makeSpear(8.2, 0.078, 0.095);
+var spearLong = makeSpear(11.2, 0.04, 0.05);
+
+/* sword in its sheath on his left hip (+x) */
+(function(){
+  var sw = new THREE.Group(); sw.position.set(0.86*p, 4.55*p, 0.3*p); sw.rotation.set(0.3, 0, 0.16); G.add(sw);
+  var shg = new THREE.CylinderGeometry(0.068, 0.046, 1.55, 24); shg.scale(1, 1, 0.42); shg.translate(0, -0.775, 0);
+  mesh(shg, M.leather, sw);
+  var chape = mesh(new THREE.ConeGeometry(0.05, 0.16, 20), M.copper, sw); chape.scale.z = 0.5; chape.rotation.x = Math.PI; chape.position.y = -1.6;
+  var throat = mesh(new THREE.CylinderGeometry(0.075, 0.072, 0.07, 24), M.copper, sw); throat.scale.z = 0.5; throat.position.y = -0.03;
+  var guard = mesh(new THREE.BoxGeometry(0.32, 0.05, 0.08), M.iron, sw); guard.position.y = 0.03;
+  var grip = mesh(new THREE.CylinderGeometry(0.035, 0.04, 0.36, 18), M.leather, sw); grip.position.y = 0.24;
+  ball(sw, V(0, 0.46, 0), 0.06, M.copper);
+})();
+
+/* group Golyas's gear into separate pieces for the take-apart view */
+var BODY = G.children.slice(0, BODY_N), GEAR = G.children.slice(BODY_N);
+function wrap(list){ var w = new THREE.Group(); G.add(w); list.forEach(function(o){ w.add(o); }); return w; }
+var ITEMS = {
+  spear: wrap([spearThick, spearLong]),
+  helmet: wrap([GEAR[0]]),
+  shiryon: wrap([coat, scalesCoat, scalesHoles]),
+  legs: wrap([legBar, greaves]),
+  kidon: wrap([neckGuard, javelin]),
+  sword: wrap([GEAR[4], GEAR[GEAR.length - 1]])
+};
+var APART_X = {spear:-0.4, helmet:-4.3, shiryon:-1.0, legs:0.85, kidon:2.45, sword:4.0};
+
+/* ---------- shield bearer ---------- */
+var BEARER = V(0.3, 0, 1.75);
+var bea = makeFigure(3, M.skin, M.cloth2, M.clothB2, {
+  el:function(s){ return V(s*0.47, 1.92, 0.14); },
+  wr:function(s){ return V(s*0.34, 1.57, 0.41); },
+  hand:function(s){ return V(s*0.33, 1.54, 0.47); }
+});
+var bearer = bea.group; bearer.position.copy(BEARER); scene.add(bearer);
+(function(){
+  var W = 2.8, Hs = 5.2, cy = 2.62, cz = 0.62, bend = 0.55;
+  var geo = new THREE.BoxGeometry(W, Hs, 0.08, 40, 40, 1);
+  var sp = geo.attributes.position;
+  for(var i=0;i<sp.count;i++){ var x = sp.getX(i)/(W/2); sp.setZ(i, sp.getZ(i) - bend*x*x); }
+  geo.computeVertexNormals();
+  var wc = document.createElement("canvas"); wc.width = wc.height = 128;
+  var wx = wc.getContext("2d"); wx.fillStyle = "#6e5130"; wx.fillRect(0,0,128,128);
+  for(var wi=0; wi<8; wi++) for(var wj=0; wj<8; wj++){
+    var horiz = (wi + wj) % 2 === 0;
+    for(var wk=0; wk<4; wk++){
+      wx.fillStyle = wk % 2 ? "#a5814f" : "#937143";
+      if(horiz) wx.fillRect(wi*16, wj*16 + wk*4, 16, 3); else wx.fillRect(wi*16 + wk*4, wj*16, 3, 16);
+    }
+  }
+  var weave = new THREE.CanvasTexture(wc);
+  weave.wrapS = weave.wrapT = THREE.RepeatWrapping; weave.repeat.set(7, 13);
+  weave.encoding = THREE.sRGBEncoding; weave.anisotropy = 8;
+  var shieldMat = std({color:0xffffff, roughness:0.88, map:weave});
+  var sh = mesh(geo, shieldMat, bearer); sh.position.set(0, cy, cz);
+  var pts = [], N = 120;
+  for(var k=0;k<=N;k++){
+    var t = k/N*4, x, y;
+    if(t < 1){ x = -W/2 + t*W; y = -Hs/2; }
+    else if(t < 2){ x = W/2; y = -Hs/2 + (t-1)*Hs; }
+    else if(t < 3){ x = W/2 - (t-2)*W; y = Hs/2; }
+    else { x = -W/2; y = Hs/2 - (t-3)*Hs; }
+    var xn = x/(W/2);
+    pts.push(V(x, y + cy, cz + 0.03 - bend*xn*xn));
+  }
+  mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true, "catmullrom", 0.02), 400, 0.05, 10, true), M.copper, bearer);
+  var boss = mesh(new THREE.SphereGeometry(0.3, 40, 20, 0, Math.PI*2, 0, Math.PI/2), M.copper, bearer);
+  boss.rotation.x = Math.PI/2; boss.position.set(0, cy, cz + 0.04);
+  function zBack(x){ var xn = x/(W/2); return cz - 0.04 - bend*xn*xn; }
+  [-1.1, -0.55, 0, 0.55, 1.1].forEach(function(x){
+    var sl = mesh(new THREE.BoxGeometry(0.08, Hs - 0.2, 0.05), M.wood, bearer);
+    sl.position.set(x, cy, zBack(x) - 0.025);
+    sl.rotation.y = Math.atan(2*bend*x/((W/2)*(W/2)));
+  });
+  [0.6, 2.45, 4.3].forEach(function(y){
+    var cp = [];
+    for(var k=0;k<=24;k++){ var x = -1.3 + k/24*2.6; cp.push(V(x, y, zBack(x) - 0.06)); }
+    mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(cp), 48, 0.035, 10, false), M.wood, bearer);
+  });
+  [-1, 1].forEach(function(s){
+    var gx = s*0.33;
+    seg(bearer, V(gx, 1.34, 0.47), V(gx, 1.74, 0.47), 0.028, 0.028, M.leather, 14);
+    [1.34, 1.74].forEach(function(y){
+      var br = mesh(new THREE.BoxGeometry(0.05, 0.05, 0.11), M.wood, bearer);
+      br.position.set(gx, y, 0.52);
+    });
+  });
+  var strap = new THREE.CatmullRomCurve3([V(0.62, 3.1, zBack(0.62) - 0.03), V(0.34, 2.63, 0.06), V(0.02, 2.25, -0.23), V(-0.38, 1.86, -0.06), V(-0.62, 1.78, zBack(-0.62) - 0.03)]);
+  mesh(new THREE.TubeGeometry(strap, 80, 0.022, 8, false), M.leather, bearer);
+})();
+
+/* dashed height lines */
+var dashMat = new THREE.LineDashedMaterial({color:0x1d2327, dashSize:0.12, gapSize:0.09, transparent:true, opacity:0.6});
+function dashed(a, b){
+  var l = new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), dashMat);
+  l.computeLineDistances(); scene.add(l); return l;
+}
+var golLine = dashed(V(POLE.x, 6.5, POLE.z), V(0, 6.5, 0));
+var bearerLine = dashed(V(POLE.x, 3, POLE.z), V(BEARER.x, 3, BEARER.z));
+
+/* ---------- labels ---------- */
+var labelsEl = document.getElementById("labels"), labels = [];
+function addLabel(html, pos, cls){
+  var el = document.createElement("div"); el.className = cls; el.innerHTML = html; labelsEl.appendChild(el);
+  var L = {el:el, pos:pos, show:true}; labels.push(L); return L;
+}
+for(var n=1;n<=7;n++) addLabel(String(n), V(POLE.x + 0.06, n, POLE.z), "tick");
+addLabel("amos", V(POLE.x + 0.06, 7.35, POLE.z), "tick");
+var golLabel = addLabel("<b>Golyas</b>6 amos and a zeres", V(0, 6.62, 0), "tag");
+var bearerLabel = addLabel("<b>Shield bearer</b>3 amos", V(BEARER.x, 3.12, BEARER.z), "tag");
+var tmp = new THREE.Vector3();
+function placeLabels(w, h){
+  labels.forEach(function(L){
+    if(!L.show){ L.el.style.display = "none"; return; }
+    tmp.copy(L.pos).project(camera);
+    if(tmp.z > 1 || tmp.z < -1){ L.el.style.display = "none"; return; }
+    L.el.style.display = "";
+    L.el.style.left = ((tmp.x + 1)/2*w).toFixed(1) + "px";
+    L.el.style.top = ((1 - tmp.y)/2*h).toFixed(1) + "px";
+  });
+}
+
+/* ---------- take apart ---------- */
+var itemLabels = {};
+Object.keys(ITEMS).forEach(function(k){ itemLabels[k] = addLabel("", V(0,0,0), "tag"); itemLabels[k].show = false; });
+var _bb = new THREE.Box3();
+function visBox(obj){
+  var box = new THREE.Box3(); obj.updateMatrixWorld(true);
+  obj.traverseVisible(function(o){
+    if(o.isMesh && !o.isInstancedMesh){
+      if(!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+      _bb.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld); box.union(_bb);
+    }
+  });
+  return box;
+}
+function itemText(k){
+  var W = {"100":["about 5,290 lbs","about 635 lbs"], "50":["about 2,650 lbs","about 317 lbs"], "sela":["about 212 lbs","about 25 lbs"]}[state.maneh];
+  var none = "no weight given";
+  if(k === "spear") return "<b>Spear</b>Head: 600 shekels of iron, " + W[1] + "<br>Shaft: " + none;
+  if(k === "shiryon") return "<b>Shiryon</b>5,000 shekels of copper<br>" + W[0];
+  if(k === "helmet") return "<b>Copper helmet</b>" + none;
+  if(k === "legs") return (state.legs === "rashi" ? "<b>Iron bar, helmet to feet</b>" : "<b>Copper leg guards</b>") + none;
+  if(k === "kidon") return (state.kidon === "guard" ? "<b>Copper neck guard</b>" : "<b>Copper javelin</b>") + none;
+  return "<b>Sword and sheath</b>" + none;
+}
+function layoutApart(){
+  var on = state.apart, s = G.scale.x;
+  BODY.forEach(function(o){ o.visible = !on; });
+  golLabel.show = !on; golLine.visible = !on; golRing.visible = !on;
+  if(on){ bearer.visible = false; bearerLine.visible = false; bearerRing.visible = false; bearerLabel.show = false; }
+  Object.keys(ITEMS).forEach(function(k){
+    var w = ITEMS[k], L = itemLabels[k];
+    w.position.set(0, 0, 0); w.rotation.set(0, 0, 0);
+    if(!on){ L.show = false; return; }
+    var tz = 0.6;
+    if(k === "spear"){ w.rotation.z = Math.PI/2; tz = 2.4; }
+    var box = visBox(w), c = box.getCenter(new THREE.Vector3());
+    w.position.set((APART_X[k] - c.x)/s, -box.min.y/s, (tz - c.z)/s);
+    var b2 = visBox(w);
+    if(k === "spear") L.pos.set(APART_X[k] - 1.2, b2.max.y + 0.12, tz);
+    else L.pos.set(APART_X[k], b2.max.y + 0.1, tz);
+    L.el.innerHTML = itemText(k); L.show = true;
+  });
+}
+
+/* ---------- state ---------- */
+var ZERES = {half:{v:1/2, t:"6½ amos"}, half5:{v:5/12, t:"6 5⁄12 amos"}, third:{v:1/3, t:"6⅓ amos"}};
+function feet(amos){ var inch = Math.round(amos*18.9), ft = Math.floor(inch/12), r = inch % 12; return "about " + ft + " ft" + (r ? " " + r + " in" : ""); }
+function applyState(){
+  var z = ZERES[state.zeres], golH = 6 + z.v;
+  G.scale.setScalar(golH/6.5);
+  golRing.position.y = golH;
+  golLabel.pos.set(0, golH + 0.12, 0);
+  golLine.geometry.setFromPoints([V(POLE.x, golH, POLE.z), V(0, golH, 0)]);
+  golLine.computeLineDistances();
+  document.getElementById("golSize").textContent = z.t + ", " + feet(golH);
+  scalesCoat.visible = state.armor === "coat";
+  scalesHoles.visible = state.armor === "holes";
+  legBar.visible = state.legs === "rashi";
+  greaves.visible = state.legs === "guards";
+  neckGuard.visible = state.kidon === "guard";
+  javelin.visible = state.kidon === "javelin";
+  spearThick.visible = state.spear === "thick";
+  spearLong.visible = state.spear === "long";
+  var b = state.bearer === "front";
+  bearer.visible = b; bearerLine.visible = b; bearerRing.visible = b; bearerLabel.show = b;
+  layoutApart();
+}
+
+/* ---------- theme ---------- */
+
+function applyTheme(){
+  var cs = getComputedStyle(document.getElementById("model"));
+  var bg = new THREE.Color(cs.getPropertyValue("--scene").trim() || "#C6CED3");
+  renderer.setClearColor(bg, 1);
+  var dark = true;
+  dashMat.color.set(dark ? 0xe6eaec : 0x1d2327);
+  grid.material.color.set(dark ? 0xd8d0bf : 0x3a3226);
+  M.ground.color.set(dark ? 0x6c6457 : 0xb2a891).convertSRGBToLinear();
+}
+applyTheme();
+if(window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+
+/* ---------- views ---------- */
+var TARGET = V(0.2, 3.5, 0.6), APART_T = V(-0.4, 2.3, 0.8);
+var VIEWS = {
+  apart: V(-0.4, 5.2, 23.5),
+  front: V(4.5, 4.4, 17), back: V(-4.5, 4.4, -17), left: V(17.5, 4.4, 1.2),
+  right: V(-17.5, 4.4, 1.2), top: V(0.4, 20, 2.2)
+};
+camera.position.copy(VIEWS.front); controls.target.copy(TARGET); controls.update();
+var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var tween = null;
+function goView(name){
+  var to = VIEWS[name];
+  var tgt = name === "apart" ? APART_T : TARGET;
+  if(reduce){ camera.position.copy(to); controls.target.copy(tgt); controls.update(); return; }
+  var s0 = new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target));
+  var s1 = new THREE.Spherical().setFromVector3(to.clone().sub(tgt));
+  var dT = s1.theta - s0.theta;
+  while(dT > Math.PI) dT -= 2*Math.PI;
+  while(dT < -Math.PI) dT += 2*Math.PI;
+  tween = {t0:performance.now(), dur:700, s0:s0, s1:s1, dT:dT, tg0:controls.target.clone(), tg1:tgt};
+}
+document.querySelector("#model .views").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  if(b.id === "apart"){
+    state.apart = !state.apart;
+    b.setAttribute("aria-pressed", state.apart ? "true" : "false");
+    applyState();
+    goView(state.apart ? "apart" : "front");
+    return;
+  }
+  if(b.id === "turn"){
+    controls.autoRotate = !controls.autoRotate;
+    b.setAttribute("aria-pressed", controls.autoRotate ? "true" : "false");
+    return;
+  }
+  goView(b.dataset.view);
+});
+controls.addEventListener("start", function(){ tween = null; });
+
+/* ---------- loop ---------- */
+var W = 0, Hh = 0;
+function resize(){
+  W = stage.clientWidth; Hh = stage.clientHeight;
+  if(!W || !Hh) return;
+  renderer.setSize(W, Hh, false);
+  camera.aspect = W/Hh;
+  camera.fov = W/Hh < 0.8 ? 48 : 35;
+  camera.updateProjectionMatrix();
+}
+if(window.ResizeObserver) new ResizeObserver(resize).observe(stage);
+window.addEventListener("resize", resize);
+resize();
+
+function frame(now){
+  if(!window.__modelOn){ requestAnimationFrame(frame); return; }
+  if(tween){
+    var k = Math.min(1, (now - tween.t0)/tween.dur), e = k < 0.5 ? 2*k*k : 1 - Math.pow(-2*k + 2, 2)/2;
+    var s = new THREE.Spherical(
+      tween.s0.radius + (tween.s1.radius - tween.s0.radius)*e,
+      tween.s0.phi + (tween.s1.phi - tween.s0.phi)*e,
+      tween.s0.theta + tween.dT*e);
+    controls.target.copy(tween.tg0).lerp(tween.tg1, e);
+    camera.position.setFromSpherical(s).add(controls.target);
+    if(k >= 1) tween = null;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  placeLabels(W, Hh);
+  requestAnimationFrame(frame);
+}
+
+renderSources();
+applyState();
+requestAnimationFrame(frame);
+window.__golyas = {state:state, applyState:applyState, goView:goView, renderSources:renderSources};
+}
+</script>
+<script>
+function initBattle(){
+"use strict";
+var host = document.getElementById("bstage");
+if(typeof THREE === "undefined"){ document.getElementById("bbig").textContent = "The 3D scene couldn’t load. Check the internet connection and reload."; return; }
+
+/* ---------- renderer, scene ---------- */
+var renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setClearColor(new THREE.Color(0x1A2024), 1);
+host.insertBefore(renderer.domElement, host.firstChild);
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 300);
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; controls.dampingFactor = 0.08;
+controls.maxPolarAngle = Math.PI*0.495; controls.minDistance = 2; controls.maxDistance = 70;
+var autoCam = true, camMode = "auto";
+function setCam(m){
+  camMode = m; autoCam = (m === "auto");
+  document.querySelectorAll("#bcam button").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.cam === m ? "true" : "false"); });
+  var h = document.getElementById("bhint"); if(h) h.hidden = (m === "auto");
+  if(m !== "auto"){
+    var bb = document.getElementById("bbig"), bc = document.getElementById("bctl"), bp = document.getElementById("bplay");
+    if(bb) bb.hidden = true; if(bc) bc.hidden = false; if(bp) bp.textContent = playing ? "Pause" : "Play";
+  }
+}
+controls.addEventListener("start", function(){ if(camMode === "auto") setCam("free"); });
+controls.minDistance = 0.8; controls.enablePan = true; controls.screenSpacePanning = true;
+document.querySelectorAll("#bcam button").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); setCam(b.dataset.cam); }); });
+var keys = {};
+window.addEventListener("keydown", function(e){
+  if(!window.__battleOn || e.ctrlKey || e.metaKey || e.altKey) return;
+  var k = (e.key || "").toLowerCase();
+  if(k.length === 1 && "wasdqe".indexOf(k) >= 0){ keys[k] = true; if(camMode === "auto" || camMode === "dovid" || camMode === "golyas") setCam("free"); }
+});
+window.addEventListener("keyup", function(e){ keys[(e.key || "").toLowerCase()] = false; });
+window.addEventListener("blur", function(){ keys = {}; });
+function walkKeys(dt){
+  var f = (keys.w ? 1 : 0) - (keys.s ? 1 : 0), r = (keys.d ? 1 : 0) - (keys.a ? 1 : 0), u = (keys.e ? 1 : 0) - (keys.q ? 1 : 0);
+  if(!f && !r && !u) return;
+  var dir = new THREE.Vector3(); camera.getWorldDirection(dir); dir.y = 0; dir.normalize();
+  var right = new THREE.Vector3().crossVectors(dir, UP).normalize();
+  var mv = dir.multiplyScalar(f).add(right.multiplyScalar(r)).multiplyScalar(4.5*dt); mv.y += u*3*dt;
+  camera.position.add(mv); controls.target.add(mv);
+  if(camera.position.y < 0.3){ var fix = 0.3 - camera.position.y; camera.position.y += fix; controls.target.y += fix; }
+}
+var lastF = 0;
+
+(function(){
+  var env = new THREE.Scene();
+  var sky = new THREE.Mesh(new THREE.SphereGeometry(50, 32, 16), new THREE.MeshBasicMaterial({side:THREE.BackSide, vertexColors:true}));
+  var pos = sky.geometry.attributes.position, cols = [];
+  var top = new THREE.Color(0xdfe6ec).convertSRGBToLinear(), mid = new THREE.Color(0xa9a396).convertSRGBToLinear(), low = new THREE.Color(0x4e4538).convertSRGBToLinear();
+  for(var i=0;i<pos.count;i++){ var y = pos.getY(i)/50, c = y > 0 ? mid.clone().lerp(top, y) : mid.clone().lerp(low, -y); cols.push(c.r, c.g, c.b); }
+  sky.geometry.setAttribute("color", new THREE.Float32BufferAttribute(cols, 3)); env.add(sky);
+  function panel(x,y,z,w,h,k){ var m = new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({color:new THREE.Color(k,k,k*0.96), side:THREE.DoubleSide})); m.position.set(x,y,z); m.lookAt(0,0,0); env.add(m); }
+  panel(18,26,14,22,10,3.2); panel(-24,14,-8,16,10,1.2); panel(0,8,-30,30,6,0.8);
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(env, 0.03).texture;
+})();
+scene.add(new THREE.HemisphereLight(0xe3eaf0, 0x6e604c, 0.35));
+var sun = new THREE.DirectionalLight(0xfff1de, 1.8);
+sun.position.set(-6, 16, 12); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -18; sun.shadow.camera.right = 18; sun.shadow.camera.top = 14; sun.shadow.camera.bottom = -10;
+sun.shadow.camera.near = 1; sun.shadow.camera.far = 50; sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02;
+scene.add(sun);
+var fill = new THREE.DirectionalLight(0xc9d6e2, 0.45); fill.position.set(8, 6, -6); scene.add(fill);
+
+function std(o){ if(o.color !== undefined) o.color = new THREE.Color(o.color).convertSRGBToLinear(); return new THREE.MeshStandardMaterial(o); }
+var M = {
+  copper:std({color:0xc27a45, metalness:1, roughness:0.3}), copperD:std({color:0x9a5a30, metalness:1, roughness:0.42}),
+  iron:std({color:0x8e9298, metalness:1, roughness:0.4}), ironB:std({color:0xb4b8bd, metalness:1, roughness:0.22}), ironD:std({color:0x60656b, metalness:1, roughness:0.5}),
+  wood:std({color:0x7b5534, roughness:0.72}), leather:std({color:0x4c3526, roughness:0.82}),
+  skin:std({color:0xc4ae92, roughness:0.85}), cloth:std({color:0x7a6a54, roughness:0.95}), dcloth:std({color:0x6f7d52, roughness:0.95}),
+  ground:std({color:0x6c6457, roughness:1}), stone:std({color:0x8b8a85, roughness:0.6}), water:std({color:0x41606f, roughness:0.15, metalness:0.1}),
+  hill:std({color:0x5a5448, roughness:1})
+};
+function dbl(m){ var c = m.clone(); c.side = THREE.DoubleSide; return c; }
+M.copper2 = dbl(M.copper); M.leather2 = dbl(M.leather); M.cloth2 = dbl(M.cloth); M.dcloth2 = dbl(M.dcloth);
+
+var UP = new THREE.Vector3(0,1,0);
+function V(x,y,z){ return new THREE.Vector3(x,y,z); }
+function mesh(geo, mat, parent){ var m = new THREE.Mesh(geo, mat); m.castShadow = true; m.receiveShadow = true; if(parent) parent.add(m); return m; }
+function down(parent, len, r1, r2, mat){ var m = mesh(new THREE.CylinderGeometry(r1, r2, len, 24), mat, parent); m.position.y = -len/2; return m; }
+function ball(parent, p, r, mat, sx, sy, sz){ var m = mesh(new THREE.SphereGeometry(r, 32, 20), mat, parent); m.position.copy(p); m.scale.set(sx||1, sy||1, sz||1); return m; }
+function seg(parent, a, b, r1, r2, mat){ var m = mesh(new THREE.CylinderGeometry(r2, r1, a.distanceTo(b), 20, 1), mat, parent); m.position.copy(a).add(b).multiplyScalar(0.5); m.quaternion.setFromUnitVectors(UP, b.clone().sub(a).normalize()); return m; }
+
+/* ---------- land ---------- */
+var gcv = document.createElement("canvas"); gcv.width = gcv.height = 256;
+var gx = gcv.getContext("2d"), gr = gx.createRadialGradient(128,128,0,128,128,128);
+gr.addColorStop(0,"#fff"); gr.addColorStop(0.5,"#fff"); gr.addColorStop(1,"#000"); gx.fillStyle = gr; gx.fillRect(0,0,256,256);
+M.ground.alphaMap = new THREE.CanvasTexture(gcv); M.ground.transparent = true;
+var ground = mesh(new THREE.CircleGeometry(48, 96), M.ground, scene); ground.rotation.x = -Math.PI/2; ground.castShadow = false;
+var brook = mesh(new THREE.PlaneGeometry(1.6, 26), M.water, scene); brook.rotation.set(-Math.PI/2, 0, Math.PI/2); brook.position.set(-7, 0.01, -6.6); brook.castShadow = false;
+[[-44,-22,18],[44,-22,18]].forEach(function(h){ var m = mesh(new THREE.SphereGeometry(h[2], 48, 24), M.hill, scene); m.scale.y = 0.42; m.position.set(h[0], -1, h[1]); m.castShadow = false; });
+
+/* ---------- people ---------- */
+var PROFILE = [[0.001,3.95],[0.62,3.97],[0.74,4.15],[0.76,4.45],[0.68,4.85],[0.66,5.15],[0.74,5.55],[0.84,5.95],[0.9,6.3],[0.88,6.55],[0.7,6.78],[0.36,6.92],[0.2,6.95],[0.001,6.96]];
+var DEPTH = 0.58;
+function rAt(y){ for(var i=0;i<PROFILE.length-1;i++){ var a = PROFILE[i], b = PROFILE[i+1]; if(y >= a[1] && y <= b[1]) return a[0] + (b[0]-a[0])*(y-a[1])/(b[1]-a[1]); } return 0; }
+function makeRig(H, skin, tunic, tunic2){
+  var p = H/8, root = new THREE.Group(), R = {root:root, p:p};
+  var torso = mesh(new THREE.LatheGeometry(PROFILE.map(function(q){ return new THREE.Vector2(q[0]*p, q[1]*p); }), 64), tunic, root); torso.scale.z = DEPTH;
+  var skirt = mesh(new THREE.LatheGeometry([[0.87,3.1],[0.81,3.7],[0.75,4.2],[0.7,4.6]].map(function(q){ return new THREE.Vector2(q[0]*p, q[1]*p); }), 64), tunic2, root); skirt.scale.z = 0.62;
+  var head = new THREE.Group(); head.position.set(0, 6.85*p, 0); root.add(head); R.head = head;
+  var nk = mesh(new THREE.CylinderGeometry(0.19*p, 0.21*p, 0.4*p, 20), skin, head); nk.position.y = 0.15*p;
+  ball(head, V(0, 0.65*p, 0), 0.5*p, skin, 0.78, 1, 0.86);
+  ["L","R"].forEach(function(side){
+    var s = side === "L" ? 1 : -1;
+    var hip = new THREE.Group(); hip.position.set(s*0.36*p, 4.05*p, 0); root.add(hip);
+    down(hip, 1.95*p, 0.33*p, 0.22*p, skin);
+    var knee = new THREE.Group(); knee.position.y = -1.95*p; hip.add(knee);
+    ball(knee, V(0,0,0), 0.215*p, skin);
+    down(knee, 1.78*p, 0.21*p, 0.125*p, skin);
+    ball(knee, V(0, -1.9*p, 0.26*p), 0.2*p, skin, 0.65, 0.62, 1.6);
+    var sh = new THREE.Group(); sh.position.set(s*0.98*p, 6.5*p, 0); root.add(sh);
+    ball(sh, V(0,0,0), 0.25*p, tunic);
+    var tilt = new THREE.Group(); tilt.rotation.z = s*0.07; sh.add(tilt);
+    down(tilt, 1.5*p, 0.2*p, 0.15*p, skin);
+    var el = new THREE.Group(); el.position.y = -1.5*p; tilt.add(el);
+    ball(el, V(0,0,0), 0.15*p, skin);
+    down(el, 1.16*p, 0.145*p, 0.1*p, skin);
+    var hand = new THREE.Group(); hand.position.y = -1.3*p; el.add(hand);
+    ball(hand, V(0,0,0), 0.15*p, skin, 0.7, 1.35, 0.85);
+    R["hip"+side] = hip; R["knee"+side] = knee; R["sh"+side] = sh; R["el"+side] = el; R["hand"+side] = hand;
+  });
+  return R;
+}
+function walk(R, ph, amp){
+  var s = Math.sin(ph);
+  R.hipL.rotation.x = -s*amp; R.hipR.rotation.x = s*amp;
+  R.kneeL.rotation.x = Math.max(0, Math.sin(ph + 1.6))*amp*1.3; R.kneeR.rotation.x = Math.max(0, Math.sin(ph + 1.6 + Math.PI))*amp*1.3;
+  R.root.position.y = Math.abs(Math.cos(ph))*amp*0.06;
+}
+function rest(R){ ["hipL","hipR","kneeL","kneeR"].forEach(function(k){ R[k].rotation.x = 0; }); R.root.position.y = 0; }
+
+/* ---------- Golyas ---------- */
+var G = makeRig(6.5, M.skin, M.cloth, M.cloth2), p = G.p;
+var gOuter = new THREE.Group(); gOuter.rotation.y = -Math.PI/2; scene.add(gOuter);
+var gTilt = new THREE.Group(); gOuter.add(gTilt); gTilt.add(G.root);
+(function(){
+  var h = new THREE.Group(); h.position.set(0, 0.65*p, 0); h.scale.set(0.8, 1, 0.88); G.head.add(h);
+  var R = 0.56*p, th = Math.PI*0.56;
+  mesh(new THREE.SphereGeometry(R, 64, 32, 0, Math.PI*2, 0, th), M.copper2, h);
+  var rim = mesh(new THREE.TorusGeometry(R*Math.sin(th), 0.032*p, 12, 96), M.copperD, h); rim.rotation.x = Math.PI/2; rim.position.y = R*Math.cos(th);
+  var ng = new THREE.Group(); ng.position.set(0, 0.65*p + R*Math.cos(th) - 0.17*p, 0); ng.scale.set(0.82, 1, 0.9); G.head.add(ng);
+  mesh(new THREE.CylinderGeometry(0.47*p, 0.42*p, 0.36*p, 40, 1, true, Math.PI - 1.7, 3.4), M.copper2, ng);
+  var tongue = mesh(new THREE.BoxGeometry(0.4*p, 0.62*p, 0.035*p), M.copper, G.head); tongue.position.set(0, -0.12*p, -0.47*p); tongue.rotation.x = 0.35;
+  var coatPts = []; for(var y=4.0; y<=6.74; y+=0.06) coatPts.push(new THREE.Vector2(rAt(y)*1.035*p, y*p));
+  var coat = mesh(new THREE.LatheGeometry(coatPts, 80), M.leather2, G.root); coat.scale.z = DEPTH;
+  var rs = 0.085*p, geo = new THREE.CylinderGeometry(rs, rs*0.92, 0.02*p, 16, 1); geo.rotateX(Math.PI/2); geo.scale(1, 1.3, 1);
+  var list = [], row = 0;
+  for(var yy = 6.62*p; yy >= 4.04*p; yy -= 0.118*p, row++){
+    var a = rAt(yy/p)*p*1.065, b = a*DEPTH, per = Math.PI*(3*(a+b) - Math.sqrt((3*a+b)*(a+3*b))), n = Math.max(10, Math.round(per/(0.14*p)));
+    for(var k=0;k<n;k++) list.push([yy, (k + (row % 2 ? 0.5 : 0))/n*Math.PI*2, a, b]);
+  }
+  var im = new THREE.InstancedMesh(geo, M.iron, list.length); im.castShadow = true; im.receiveShadow = true;
+  var d = new THREE.Object3D(), nr = new THREE.Vector3();
+  list.forEach(function(q, i){ var x = q[2]*Math.sin(q[1]), z = q[3]*Math.cos(q[1]); nr.set(q[3]*Math.sin(q[1]), 0, q[2]*Math.cos(q[1])).normalize(); d.position.set(x, q[0], z); d.lookAt(x + nr.x, q[0], z + nr.z); d.rotateX(-0.3); d.updateMatrix(); im.setMatrixAt(i, d.matrix); });
+  G.root.add(im);
+  var bg = new THREE.Group(); bg.position.y = 4.62*p; bg.scale.z = DEPTH*1.02; G.root.add(bg);
+  var belt = mesh(new THREE.TorusGeometry((rAt(4.62)*1.07 + 0.06)*p, 0.05*p, 12, 96), M.leather, bg); belt.rotation.x = Math.PI/2;
+  [G.kneeL, G.kneeR].forEach(function(kn){
+    var gm = mesh(new THREE.CylinderGeometry(0.245*p, 0.16*p, 1.62*p, 36, 1, true, -2.05, 4.1), M.copper2, kn); gm.position.set(0, -0.92*p, 0.01*p);
+    var kc = mesh(new THREE.SphereGeometry(0.245*p, 28, 14, Math.PI/2 - 1.25, 2.5, 0.35, 2.0), M.copper2, kn);
+  });
+})();
+/* spear in his right hand */
+(function(){
+  var sg = new THREE.Group(); sg.position.set(0, -2.75, 0.06); G.handR.add(sg);
+  seg(sg, V(0,0.22,0), V(0,8.2,0), 0.095, 0.078, M.wood);
+  var hd = new THREE.LatheGeometry([[0.001,0],[0.075,0.02],[0.08,0.24],[0.17,0.42],[0.178,0.58],[0.125,0.82],[0.05,1.0],[0.001,1.08]].map(function(q){ return new THREE.Vector2(q[0]*1.05, q[1]*1.05); }), 40);
+  var hp = hd.attributes.position; for(var i=0;i<hp.count;i++){ if(hp.getY(i) > 0.27) hp.setZ(i, hp.getZ(i)*0.2); } hd.computeVertexNormals();
+  var head = mesh(hd, M.ironB, sg); head.position.y = 8.24;
+})();
+/* sword in its sheath, left hip */
+var sheath = new THREE.Group(); sheath.position.set(0.86*p, 4.55*p, 0.3*p); sheath.rotation.set(0.3, 0, 0.16); G.root.add(sheath);
+(function(){
+  var shg = new THREE.CylinderGeometry(0.068, 0.046, 1.55, 20); shg.scale(1, 1, 0.42); shg.translate(0, -0.775, 0); mesh(shg, M.leather, sheath);
+  var ch = mesh(new THREE.ConeGeometry(0.05, 0.16, 16), M.copper, sheath); ch.scale.z = 0.5; ch.rotation.x = Math.PI; ch.position.y = -1.6;
+})();
+var sword = new THREE.Group(); sheath.add(sword);
+(function(){
+  var gd = mesh(new THREE.BoxGeometry(0.32, 0.05, 0.08), M.iron, sword); gd.position.y = 0.03;
+  var gp = mesh(new THREE.CylinderGeometry(0.035, 0.04, 0.36, 16), M.leather, sword); gp.position.y = 0.24;
+  ball(sword, V(0, 0.46, 0), 0.06, M.copper);
+  var bl = new THREE.CylinderGeometry(0.05, 0.012, 1.45, 4, 1); bl.scale(1, 1, 0.25); bl.translate(0, -0.72, 0); mesh(bl, M.ironB, sword);
+})();
+
+/* ---------- Dovid ---------- */
+var D = makeRig(3, M.skin, M.dcloth, M.dcloth2), dp = D.p;
+var dOuter = new THREE.Group(); dOuter.rotation.y = Math.PI/2; scene.add(dOuter); dOuter.add(D.root);
+var bag = new THREE.Group(); bag.position.set(-0.92*dp, 4.1*dp, 0.2*dp); D.root.add(bag);
+ball(bag, V(0,0,0), 0.13, M.leather, 1, 1.2, 0.8);
+var strap = new THREE.CatmullRomCurve3([V(-0.88*dp,4.25*dp,0.2*dp), V(-0.6*dp,5.6*dp,0.62*dp), V(0.55*dp,6.7*dp,0.35*dp), V(0.7*dp,6.75*dp,-0.2*dp), V(-0.2*dp,5.8*dp,-0.62*dp), V(-0.9*dp,4.3*dp,-0.1*dp)]);
+mesh(new THREE.TubeGeometry(strap, 60, 0.012, 6, false), M.leather, D.root);
+var staff = new THREE.Group(); D.handL.add(staff); staff.position.set(0, 0, 0.03);
+seg(staff, V(0,-1.15,0), V(0,1.25,0), 0.028, 0.024, M.wood);
+var STONES = [];
+for(var si=0; si<5; si++){ var st = mesh(new THREE.SphereGeometry(0.06, 16, 12), M.stone, scene); st.scale.set(1, 0.75, 0.9); STONES.push(st); }
+var pouch = mesh(new THREE.SphereGeometry(0.065, 16, 10), M.leather, scene); pouch.scale.set(1.3, 0.7, 1.1);
+var cordGeo = new THREE.BufferGeometry().setFromPoints([V(0,0,0), V(0,0,0), V(0,0,0)]);
+var cords = new THREE.Line(cordGeo, new THREE.LineBasicMaterial({color:0x3a2a1c})); scene.add(cords);
+
+/* ---------- timeline ---------- */
+var T_END = 35;
+var CAP = [
+ [0, "וַיִּקַּח מַקְלוֹ בְּיָדוֹ וַיִּבְחַר־לוֹ חֲמִשָּׁה חַלֻּקֵי־אֲבָנִים מִן־הַנַּחַל וַיָּשֶׂם אֹתָם בִּכְלִי הָרֹעִים אֲשֶׁר־לוֹ וּבַיַּלְקוּט וְקַלְּעוֹ בְיָדוֹ וַיִּגַּשׁ אֶל־הַפְּלִשְׁתִּי", "He took his staff in his hand and picked out five smooth stones from the brook and put them in his shepherd’s bag, in his pouch, and his sling was in his hand; he then approached the Pelishti.", "Pasuk 40"],
+ [6, "וְהָיָה כִּי־קָם הַפְּלִשְׁתִּי וַיֵּלֶךְ וַיִּקְרַב לִקְרַאת דָּוִד וַיְמַהֵר דָּוִד וַיָּרָץ הַמַּעֲרָכָה לִקְרַאת הַפְּלִשְׁתִּי", "As the Pelishti rose and moved closer towards Dovid, Dovid hurried and ran to the line, towards the Pelishti.", "Pasuk 48"],
+ [12.5, "וַיִּשְׁלַח דָּוִד אֶת־יָדוֹ אֶל־הַכֶּלִי וַיִּקַּח מִשָּׁם אֶבֶן וַיְקַלַּע וַיַּךְ אֶת־הַפְּלִשְׁתִּי אֶל־מִצְחוֹ וַתִּטְבַּע הָאֶבֶן בְּמִצְחוֹ וַיִּפֹּל עַל־פָּנָיו אָרְצָה", "Dovid reached into the bag, took a stone from there and slung it, and struck the Pelishti in the forehead; the stone penetrated his forehead, and he fell face down upon the ground.", "Pasuk 49"],
+ [19.5, "וַיֶּחֱזַק דָּוִד מִן־הַפְּלִשְׁתִּי בַּקֶּלַע וּבָאֶבֶן וַיַּךְ אֶת־הַפְּלִשְׁתִּי וַיְמִיתֵהוּ וְחֶרֶב אֵין בְּיַד־דָּוִד", "Thus Dovid overpowered the Pelishti with the sling and stone; he smote the Pelishti and killed him, though there was no sword in Dovid’s hand.", "Pasuk 50"],
+ [23, "וַיָּרָץ דָּוִד וַיַּעֲמֹד אֶל־הַפְּלִשְׁתִּי וַיִּקַּח אֶת־חַרְבּוֹ וַיִּשְׁלְפָהּ מִתַּעְרָהּ וַיְמֹתְתֵהוּ וַיִּכְרָת־בָּהּ אֶת־רֹאשׁוֹ וַיִּרְאוּ הַפְּלִשְׁתִּים כִּי־מֵת גִּבּוֹרָם וַיָּנֻסוּ", "Dovid ran and stood by the Pelishti; he took his [Golyas’] sword, drew it out of its sheath, and killed him, and cut off his head with it. The Pelishtim saw that their hero was dead, and they fled.", "Pasuk 51"]
+];
+var CAMS = [
+ [0,   [-9.2,2.9,8.6], [-13.2,1.5,0]], [5.4, [-9.2,2.9,8.6], [-13.2,1.5,0]],
+ [7.6, [-2,6.2,24], [0,3,0]],        [12.2, [-2,6.2,24], [0,3,0]],
+ [13.4,[-11.5,3.0,6.8], [-3,3.2,0]], [15.7, [-11.5,3.0,6.8], [-3,3.2,0]],
+ [16.4,[-1.5,6.6,10.5], [3,5,0]],    [17.4, [-1.5,6.6,10.5], [3,5,0]],
+ [19.2,[-2,5,17], [0.5,1.2,0]],      [23, [-2,5,17], [0.5,1.2,0]],
+ [25,  [-2.5,3.4,10.5], [-0.6,1.1,0.6]], [30, [-4,3.6,10], [-1.2,1,0.5]], [T_END, [-4,3.6,10], [-1.2,1,0.5]]
+];
+function sm(x){ x = Math.min(1, Math.max(0, x)); return x*x*(3 - 2*x); }
+function span(t, a, b){ return Math.min(1, Math.max(0, (t - a)/(b - a))); }
+function lerp(a, b, k){ return a + (b - a)*k; }
+var _v = new THREE.Vector3(), _v2 = new THREE.Vector3(), _q = new THREE.Quaternion();
+var STONE_HOME = [], BRK = -14.3;
+for(var s2=0; s2<5; s2++) STONE_HOME.push(V(-14.1 + s2*0.4, 0.05, -5.65 + 0.18*(s2%2)));
+var released = null, stuck = false, swordFree = false, swordFrom = null, headCut = false;
+
+var CUR = {dx:-13.2, dz:-4.6};
+function pose(t){
+  /* reset dynamic parts */
+  rest(G); rest(D); D.root.rotation.set(0,0,0);
+  ["shL","shR","elL","elR"].forEach(function(k){ G[k].rotation.set(0,0,0); D[k].rotation.set(0,0,0); });
+  G.head.position.set(0, 6.85*p, 0); G.head.rotation.set(0,0,0);
+
+  /* Golyas walk in (48) */
+  var gw = span(t, 6, 12.6);
+  gOuter.position.set(lerp(12.5, 4, sm(gw)), 0, 0);
+  if(t > 6 && t < 12.6){ walk(G, t*3.2, 0.35); G.shL.rotation.x = Math.sin(t*3.2)*0.25; }
+  G.shR.rotation.x = -0.12;
+  /* Dovid at the brook (40), then runs (48) */
+  var dx = -13.2, dz = -4.6, yaw = lerp(Math.PI, Math.PI/2, sm(span(t, 5.2, 6.3)));
+  if(t < 5.6){
+    D.shR.rotation.x = -0.5 - 0.3*Math.sin(t*5);
+    D.elR.rotation.x = -0.6;
+  }
+  var dr = span(t, 6.2, 11.6);
+  dx = lerp(-13.2, -6.2, sm(dr)); dz = lerp(-4.6, 0, sm(dr));
+  if(t > 6.2 && t < 11.6){ walk(D, t*7.5, 0.6); D.shL.rotation.x = -Math.sin(t*7.5)*0.5; D.shR.rotation.x = Math.sin(t*7.5)*0.5; }
+  /* reach into bag, whirl, release (49) */
+  if(t >= 12.5 && t < 13.3){ var r = span(t, 12.5, 13.3); D.shR.rotation.x = Math.sin(r*Math.PI)*0.6; D.elR.rotation.x = -Math.sin(r*Math.PI)*0.9; }
+  if(t >= 13.3 && t < 15.7){ D.shR.rotation.x = -2.75; D.shR.rotation.z = -0.2; }
+  if(t >= 15.7 && t < 16.4){ var f2 = span(t, 15.7, 16.4); D.shR.rotation.x = lerp(-2.75, -0.6, sm(f2)); }
+  /* Golyas struck and falls forward (49) */
+  var hitT = 16.75, fallA = 0, lift = 0;
+  if(t > hitT){
+    var back = span(t, hitT, hitT + 0.35), fall = span(t, hitT + 0.35, hitT + 1.75);
+    fallA = (Math.PI/2)*fall*fall;
+    lift = 0.52*Math.sin(Math.max(0, fallA));
+    if(fall > 0){ G.shL.rotation.x = -1.2*fall; G.shR.rotation.x = -0.12; G.shR.rotation.z = 0.12*fall; G.hipL.rotation.x = 0.1*fall; }
+    if(fall >= 1){ var bump = span(t, hitT + 1.75, hitT + 2.05); lift += 0.06*Math.sin(bump*Math.PI); }
+  }
+  gTilt.rotation.x = fallA; gTilt.position.y = lift;
+  /* Dovid runs to him and takes the sword (51) */
+  if(t >= 23){
+    var a1 = span(t, 23, 25.1);
+    dx = lerp(-6.2, 0.5, sm(a1)); dz = lerp(0, 1.65, sm(a1));
+    if(t < 25.1) { walk(D, t*7.5, 0.55); D.shL.rotation.x = -Math.sin(t*7.5)*0.5; }
+    yaw = lerp(Math.PI/2, Math.PI, sm(span(t, 24.4, 25.3)));
+    if(t >= 25.2 && t < 26.6){ var rr = span(t, 25.2, 25.9), up = span(t, 25.9, 26.6); D.shR.rotation.x = Math.sin(rr*Math.PI/2)*0.5 - up*1.1; D.root.rotation.x = 0.25*Math.sin(Math.min(1, rr + (1 - up))*Math.PI/2)*(1 - up); }
+    if(t >= 26.6){
+      var a2 = span(t, 26.6, 27.8);
+      dx = lerp(0.5, -1.55, sm(a2)); dz = lerp(1.65, 1.25, sm(a2));
+      if(t < 27.8) walk(D, t*6, 0.4);
+      D.shR.rotation.x = -0.6;
+      var raise = span(t, 27.8, 28.4), swing = span(t, 28.45, 28.75);
+      if(t >= 27.8) D.shR.rotation.x = lerp(-0.6, -2.9, sm(raise));
+      if(t >= 28.45) D.shR.rotation.x = lerp(-2.9, -0.7, sm(swing));
+    }
+  }
+  D.root.position.y += 0;
+  dOuter.position.set(dx, 0, dz); dOuter.rotation.y = yaw; CUR.dx = dx; CUR.dz = dz;
+  /* cut (51), seen only through the dark */
+  if(t >= 28.85){ G.head.position.set(0, 7.75*p, 0.05*p); G.head.rotation.set(0.25, 0, 0.35); }
+
+  scene.updateMatrixWorld(true);
+  /* stones */
+  var bagW = bag.getWorldPosition(new THREE.Vector3());
+  STONES.forEach(function(st, i){
+    var t0 = 1 + i*0.75, k = span(t, t0, t0 + 0.55);
+    if(i === 0 && t >= 12.9){ st.visible = false; return; }
+    if(k <= 0){ st.visible = true; st.position.copy(STONE_HOME[i]); return; }
+    if(k >= 1){ st.visible = false; return; }
+    st.visible = true;
+    st.position.copy(STONE_HOME[i]).lerp(bagW, k); st.position.y += Math.sin(k*Math.PI)*0.6;
+  });
+  /* sling */
+  var hand = D.handR.getWorldPosition(new THREE.Vector3()), pp = new THREE.Vector3();
+  var shot = STONES[0], ammo = new THREE.Vector3();
+  if(t < 13.3){
+    pp.copy(hand).add(V(0, -0.42, 0));
+    if(t >= 12.9){ var kk = span(t, 12.9, 13.3); ammo.copy(bagW).lerp(pp, kk); }
+  } else if(t < 15.7){
+    var w = span(t, 13.3, 15.7), ang = (w*w*3.6 + w*1.2)*Math.PI*2;
+    var dirX = 1;
+    pp.copy(hand).add(V(Math.cos(ang)*0.55*dirX, 0.3 + Math.sin(ang)*0.55, 0));
+  } else {
+    pp.copy(hand).add(V(0.25, -0.35, 0));
+  }
+  pouch.position.copy(pp);
+  var midP = hand.clone().lerp(pp, 0.5); midP.z += 0.04;
+  var cp = cordGeo.attributes.position; cp.setXYZ(0, hand.x, hand.y, hand.z); cp.setXYZ(1, midP.x, midP.y, midP.z); cp.setXYZ(2, pp.x, pp.y, pp.z); cp.needsUpdate = true;
+  var flyStone = null;
+  if(t >= 12.9 && t < 15.7){ flyStone = t < 13.3 ? ammo : pp; }
+  if(t >= 15.7 && t < hitT){
+    var fh = G.head.localToWorld(V(0, 0.78*p, 0.42*p));
+    var k3 = span(t, 15.7, hitT), from = released || (released = pouchAt(15.7));
+    var ctrl = from.clone().lerp(fh, 0.5); ctrl.y += 1.4;
+    flyStone = new THREE.Vector3().copy(from).multiplyScalar((1-k3)*(1-k3)).add(ctrl.clone().multiplyScalar(2*(1-k3)*k3)).add(fh.clone().multiplyScalar(k3*k3));
+  }
+  if(t < 15.7) released = null;
+  if(flyStone){ shotStone.visible = true; shotStone.position.copy(flyStone); }
+  else shotStone.visible = false;
+  embedded.visible = t >= hitT;
+  /* sword: in sheath, then to Dovid's hand */
+  if(t < 25.6){
+    if(sword.parent !== sheath){ sheath.add(sword); }
+    sword.position.set(0,0,0); sword.rotation.set(0,0,0);
+  } else {
+    var fromM = new THREE.Matrix4(); sheath.updateWorldMatrix(true, false); fromM.copy(sheath.matrixWorld);
+    var fp = new THREE.Vector3(), fq = new THREE.Quaternion(), fs = new THREE.Vector3(); fromM.decompose(fp, fq, fs);
+    D.handR.updateWorldMatrix(true, false);
+    var tp = D.handR.localToWorld(V(0, 0.02, 0)), tq = D.handR.getWorldQuaternion(new THREE.Quaternion());
+    var km = sm(span(t, 25.6, 26.3));
+    if(sword.parent !== scene) scene.add(sword);
+    sword.position.copy(fp).lerp(tp, km);
+    sword.quaternion.copy(fq).slerp(tq, km);
+  }
+}
+var shotStone = mesh(new THREE.SphereGeometry(0.06, 16, 12), M.stone, scene); shotStone.scale.set(1, 0.75, 0.9);
+var embedded = mesh(new THREE.SphereGeometry(0.06, 16, 12), M.stone, G.head); embedded.scale.set(1, 0.75, 0.9); embedded.position.set(0, 0.78*p, 0.4*p); embedded.visible = false;
+function pouchAt(tt){ return pouch.position.clone(); }
+
+/* ---------- camera ---------- */
+var SHOTS = [[0,0],[5.6,1.2],[12.4,0.8],[16.6,0],[19.2,1.2],[23,1.0],[28.2,1.0]];
+function shot(i){
+  var dx = CUR.dx, dz = CUR.dz, gx = gOuter.position.x, mid = (dx + gx)/2, sep = Math.abs(gx - dx);
+  if(i === 0) return [V(dx + 6.5, 2.2, dz + 3.6), V(dx - 0.5, 1.0, dz - 0.7)];
+  if(i === 1){ var d = Math.max(10, sep*0.85 + 5); return [V(mid - 1.5, 3.4, d), V(mid, 2.9, 0)]; }
+  if(i === 2) return [V(dx - 3.2, 2.2, 1.1), V(gx, 2.8, -0.2)];
+  if(i === 3) return [V(gx - 4.0, 4.2, 18), V(gx - 2.4, 2.4, 0)];
+  if(i === 4) return [V(mid - 1.5, 4.2, 13), V(mid, 1.2, 0)];
+  if(i === 5) return [V(dx + 1.5, 3.0, dz + 7.2), V(dx - 0.3, 1.2, dz - 0.6)];
+  return [V(-4.6, 3.1, 8.6), V(-1.4, 0.9, 0.4)];
+}
+function camAt(t){
+  var i = 0; while(i < SHOTS.length - 1 && t >= SHOTS[i+1][0]) i++;
+  var p = shot(i);
+  if(i > 0 && SHOTS[i][1] > 0){
+    var k = sm(span(t, SHOTS[i][0], SHOTS[i][0] + SHOTS[i][1]));
+    if(k < 1){ var q = shot(i - 1); p[0] = q[0].lerp(p[0], k); p[1] = q[1].lerp(p[1], k); }
+  }
+  camera.position.copy(p[0]); controls.target.copy(p[1]);
+}
+
+/* ---------- UI ---------- */
+var t = 0, playing = false, last = 0, capIdx = -1;
+var bigBtn = document.getElementById("bbig"), playBtn = document.getElementById("bplay"), againBtn = document.getElementById("bagain");
+var prog = document.getElementById("bprog"), fade = document.getElementById("bfade");
+var capRef = document.getElementById("bref"), capHe = document.getElementById("bheb"), capEn = document.getElementById("ben");
+function setCap(){
+  var i = 0; while(i < CAP.length - 1 && t >= CAP[i+1][0]) i++;
+  if(i === capIdx) return; capIdx = i;
+  capRef.textContent = CAP[i][3]; capHe.textContent = CAP[i][1]; capEn.textContent = CAP[i][2];
+}
+function setPlaying(v){
+  playing = v; playBtn.textContent = v ? "Pause" : "Play"; playBtn.setAttribute("aria-pressed", v ? "true" : "false");
+  bigBtn.hidden = true; document.getElementById("bctl").hidden = false;
+  if(v){ last = performance.now(); if(t >= T_END){ t = 0; } }
+}
+bigBtn.onclick = function(){ setPlaying(true); };
+playBtn.onclick = function(){ setPlaying(!playing); };
+againBtn.onclick = function(){ t = 0; capIdx = -1; setPlaying(true); };
+var W = 0, Hh = 0;
+function resize(){ W = host.clientWidth; Hh = host.clientHeight; if(!W || !Hh) return; renderer.setSize(W, Hh, false); camera.aspect = W/Hh; camera.fov = W/Hh < 0.8 ? 55 : 38; camera.updateProjectionMatrix(); }
+if(window.ResizeObserver) new ResizeObserver(resize).observe(host);
+window.addEventListener("resize", resize); resize();
+function frame(now){
+  requestAnimationFrame(frame);
+  if(!window.__battleOn){ last = now; return; }
+  if(playing){
+    var dt = Math.min(0.05, (now - last)/1000); t += dt;
+    if(t >= T_END){ t = T_END; setPlaying(false); playBtn.textContent = "Play"; }
+  }
+  last = now;
+  pose(t);
+  setCap();
+  var fo = t < 28.4 ? 0 : t < 28.75 ? sm(span(t, 28.4, 28.75)) : t < 30.0 ? 1 : 1 - sm(span(t, 30.0, 31.0));
+  fade.style.opacity = fo.toFixed(3);
+  prog.style.width = (t/T_END*100).toFixed(2) + "%";
+  if(autoCam) camAt(t);
+  var fdt = Math.min(0.05, Math.max(0, (now - lastF)/1000)); lastF = now;
+  if(camMode === "dovid" || camMode === "golyas"){
+    var tg = camMode === "dovid" ? dOuter.position.clone().add(V(0, 1.4, 0)) : G.root.localToWorld(V(0, 3.4*p, 0));
+    var off = camera.position.clone().sub(controls.target);
+    controls.target.copy(tg); camera.position.copy(tg).add(off);
+  }
+  if(camMode !== "auto") walkKeys(fdt);
+  controls.update();
+  renderer.render(scene, camera);
+}
+pose(0); camAt(0); setCap();
+requestAnimationFrame(frame);
+window.__battle = {seek:function(x){ t = x; capIdx = -1; }, play:function(){ setPlaying(true); }, get t(){ return t; }};
+}
+
+</script>
+<script>
+const fig=(x,y,s,cls,extra)=>'<g transform="translate('+x+' '+y+') scale('+s+')"><g class="f '+(cls||'')+'"><path class="robe" d="M-38 0 L-62 210 Q0 226 62 210 L38 0 Q0 -14 -38 0 Z"/><circle class="skin" cx="0" cy="-42" r="34"/>'+(extra||'')+'</g></g>';
+const ground='<path class="ink" d="M20 560 H580" style="stroke-width:3"/>';
+const svg=s=>'<svg viewBox="0 0 600 600" aria-hidden="true">'+s+'</svg>';
+const med=(x,y,k,inner)=>'<g data-step="'+k+'"><circle cx="'+x+'" cy="'+y+'" r="118" class="land"/><g transform="translate('+x+' '+y+')">'+inner+'</g></g>';
+const helmet='<path class="gold" d="M-38 -44 A38 38 0 0 1 38 -44 Z"/><path class="ink" d="M-43 -44 H43" style="stroke-width:5"/>';
+const scales='<path class="ink" style="stroke-width:3" d="M-36 28 q6 9 12 0 q6 9 12 0 q6 9 12 0 q6 9 12 0 q6 9 12 0 q6 9 12 0 M-42 54 q7 9 14 0 q7 9 14 0 q7 9 14 0 q7 9 14 0 q7 9 14 0 q7 9 14 0 M-46 80 q7.7 9 15.3 0 q7.7 9 15.3 0 q7.7 9 15.3 0 q7.7 9 15.3 0 q7.7 9 15.3 0 q7.7 9 15.3 0 M-50 106 q8.3 9 16.7 0 q8.3 9 16.7 0 q8.3 9 16.7 0 q8.3 9 16.7 0 q8.3 9 16.7 0 q8.3 9 16.7 0"/>';
+const tent=(x,y,s)=>'<g transform="translate('+x+' '+y+') scale('+(s||1)+')"><path class="robe" d="M-28 0 L0 -38 L28 0 Z"/><path d="M-8 0 L0 -14 L8 0 Z" fill="var(--ink)"/></g>';
+const ART={
+ wars:svg(
+  med(165,165,0,'<rect class="gold" x="-52" y="-34" width="104" height="62" rx="5"/><path class="ink" d="M-84 -8 H84 M-84 12 H84" style="stroke-width:7"/>')+
+  med(435,165,1,'<ellipse class="skin" cx="-28" cy="-30" rx="46" ry="30"/><ellipse class="skin" cx="26" cy="-40" rx="46" ry="34"/><path class="gold" d="M6 -12 L-22 36 L-2 36 L-18 84 L32 18 L10 18 L28 -12 Z"/>')+
+  med(165,435,2,'<path class="robe" d="M-92 74 L-24 -54 L8 -34 L92 74 Z"/>'+fig(-18,-90,.2,'')+fig(12,-82,.17,''))+
+  med(435,435,3,'<path class="gold" d="M-56 22 A56 56 0 0 1 56 22 Z"/><path class="ink" d="M-64 22 H64" style="stroke-width:8"/><text x="0" y="92" text-anchor="middle" class="sv" style="font-size:58px;font-weight:900">?</text>')),
+ where:svg(
+  '<path class="land" d="M10 540 Q140 470 220 255 Q250 420 315 520 Q370 545 425 520 Q470 420 490 255 Q540 470 590 540 L590 562 L10 562 Z"/>'+
+  '<g data-step="1">'+tent(185,318,.9)+tent(140,378,.8)+'<text x="215" y="225" text-anchor="middle" class="sv">יִשְׂרָאֵל</text></g>'+
+  '<g data-step="0">'+tent(520,318,.9)+tent(560,378,.8)+'<text x="490" y="225" text-anchor="middle" class="sv">פְּלִשְׁתִּים</text></g>'+
+  '<g data-step="2"><text x="370" y="495" text-anchor="middle" class="sv" style="font-size:34px">הַגַּיְא</text></g>'),
+ golyas:svg(
+  '<path class="land" d="M10 560 Q60 470 150 470 Q200 500 220 560 Z M380 560 Q410 480 470 470 Q560 480 590 560 Z"/>'+
+  tent(95,500,.7)+tent(140,505,.55)+tent(485,500,.7)+tent(530,505,.55)+
+  '<g class="rise">'+fig(300,282,1.3,'',helmet+scales)+'</g>'+ground)
+};
+const H=s=>'<bdi class="hw" lang="he">'+s+'</bdi>';
+const S=[
+ {model:true, notes:'<h3>3D model</h3><p>Every opinion on the model has its source in the side panel. Arrow keys still move between screens.</p>'},
+ {battle:true, notes:'<h3>Dovid and Golyas, pesukim 40\u201351</h3><p><b>Metzudas David 40:</b></p><p class="he">„ויקח מקלו” – להטעות את הפלשתי, לחשוב שיגש אליו להכותו עם המקל, ולא יהיה נשמר מן הקלע</p><p class="he">„ובילקוט” – הכלי שם בהילקוט, למען לא ירגיש בהאבנים</p><p><b>Metzudas David 49:</b></p><p class="he">„במצחו” – נכנסה בכובע הנחושת ונקבה ונטבעה במצחו</p><p><b>Rashi 49:</b> \u201cAnd he fell face downward\u201d \u2013 He should have fallen backwards since he had been struck on his forehead. But, in order that Dovid should not be troubled to walk [the extra distance] and cut off his head, for Dovid now saved twelve <i>amos</i> and two <i>zeres;</i> for his height was six <i>amos</i> and a <i>zeres,</i> Dovid saved [walking] his entire height back and his entire height forward. <b>Metsudah note:</b> Another reason why he fell face downward is because Hashem had decreed that the mouth that blasphemed shall lick the dust of the earth.</p><p><b>Metzudas David 51:</b></p><p class="he">„אל הפלשתי” – סמוך לו, כי בעת קלעו באבן, עמד ממרחק</p><p class="he">„וימותתהו” – וכבר המיתו בהקלע, ועתה כרת ראשו בחרבו</p><p><b>Choices in the animation:</b> Dovid is 3 amos (no source gives his height). The shield bearer is left out, following Daas Sofrim that he did not take part once it was one-on-one. Golyas wears the leg guards (Metzudas David, Daas Sofrim), the neck guard (Rashi, Metzudas David, Daas Sofrim) and the thick spear (Metzudas David). The head is shown only after the screen goes dark, with nothing graphic.</p>'}
+];
+
+const scroll=document.getElementById('scroll'),inner=document.getElementById('inner'),count=document.getElementById('count'),notes=document.getElementById('notes'),model=document.getElementById('model'),battle=document.getElementById('battle');
+let i=0,r=0,busy=null,modelReady=false,battleReady=false;
+function build(){
+ const s=S[i];
+ notes.innerHTML=s.notes||'';
+ const ov=s.model?'model':s.battle?'battle':'';
+ model.classList.toggle('on',ov==='model');battle.classList.toggle('on',ov==='battle');
+ document.body.classList.toggle('ov-on',!!ov);window.__modelOn=ov==='model';window.__battleOn=ov==='battle';
+ if(ov){
+  if(ov==='model'&&!modelReady){modelReady=true;try{initModel();}catch(e){console.error(e);}}
+  if(ov==='battle'&&!battleReady){battleReady=true;try{initBattle();}catch(e){console.error(e);}}
+  window.dispatchEvent(new Event('resize'));
+  count.textContent=(i+1)+' / '+S.length;return;
+ }
+ if(s.title){inner.innerHTML='<div class="title"><p class="heb">שְׁמוּאֵל א׳ · פֶּרֶק י״ז</p><p class="e">Shmuel Alef · Perek 17</p><div class="uline"></div></div>';}
+ else inner.innerHTML='<div class="art">'+ART[s.art]+'</div><div class="text"><div class="ref">'+s.ref+'</div><p class="heb">'+s.heb+'</p><p class="en">'+s.en+'</p>'+
+  '<p class="q">'+s.q.map(x=>'<span>'+x+'</span>').join('')+'</p><ul class="pts">'+s.p.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>';
+ paint();
+}
+function paint(){const tx=inner.querySelector('.text');if(tx)tx.classList.toggle('rev',r>0);inner.querySelectorAll('.pts li').forEach((li,k)=>li.classList.toggle('on',k<r));inner.querySelectorAll('[data-step]').forEach(el=>el.classList.toggle('lit',r>+el.dataset.step));count.textContent=(i+1)+' / '+S.length;}
+function go(n,toEnd){
+ if(n<0||n>=S.length)return;
+ clearTimeout(busy);scroll.classList.remove('open');
+ busy=setTimeout(()=>{i=n;r=toEnd?(S[i].p||[]).length:0;build();requestAnimationFrame(()=>requestAnimationFrame(()=>scroll.classList.add('open')));},(S[n].model||S[n].battle||S[i].model||S[i].battle)?60:560);
+}
+function next(){const max=(S[i].p||[]).length;if(r<max){r++;paint();}else go(i+1);}
+function prev(){if(r>0){r--;paint();}else go(i-1,true);}
+document.addEventListener('keydown',e=>{
+ if(e.key==='n'||e.key==='N'){notes.classList.toggle('on');return;}
+ if(['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)){e.preventDefault();next();}
+ if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev();}
+});
+document.body.addEventListener('click',e=>{if(e.target.closest('.nav,a,#model,#battle,#notes'))return;next();});
+document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;
+build();requestAnimationFrame(()=>requestAnimationFrame(()=>scroll.classList.add('open')));
+window.__deck={go:(n,k)=>{i=n;r=k||0;build();scroll.classList.add('open');}};
+</script></body></html>
